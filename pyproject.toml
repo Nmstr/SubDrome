@@ -1,0 +1,21 @@
+[project]
+name = "SubDrome"
+version = "0.1.0"
+readme = "README.md"
+description = "Subsonic desktop client"
+requires-python = ">=3.13"
+authors = [
+    { name = "Nmstr", email = "publicNamester@gmail.com" }
+]
+keywords = ["subsonic", "client", "desktop", "music"]
+classifiers = [
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Multimedia :: Sound/Audio :: Players",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: End Users/Desktop",
+]
+dependencies = []
+[project.urls]
+Source = "https://github.com/Nmstr/SubDrome"
+Issues = "https://github.com/Nmstr/SubDrome/issues"
