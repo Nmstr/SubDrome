@@ -1,0 +1,56 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="settings.svg">icons/material/cog.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="activity.svg">icons/material/chart-line-variant.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="album.svg">icons/material/album.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="favourite.svg">icons/material/heart.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="star_full.svg">icons/material/star.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="history.svg">icons/material/history.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="plus.svg">icons/material/plus.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="repeat.svg">icons/material/repeat-variant.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="shuffle.svg">icons/material/shuffle-variant.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="artist.svg">icons/material/account-music.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="song.svg">icons/material/music-note.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="playlist.svg">icons/material/playlist-music-outline.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="play.svg">icons/material/play.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="pause.svg">icons/material/pause.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="skip-next.svg">icons/material/skip-next.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="skip-previous.svg">icons/material/skip-previous.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="download.svg">icons/material/download.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="volume.svg">icons/material/volume-high.svg</file>
+    </qresource>
+</RCC>

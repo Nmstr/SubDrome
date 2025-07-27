@@ -15,7 +15,9 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Intended Audience :: End Users/Desktop",
 ]
-dependencies = []
+dependencies = [
+    "pyside6>=6.9.1",
+]
 [project.urls]
 Source = "https://github.com/Nmstr/SubDrome"
 Issues = "https://github.com/Nmstr/SubDrome/issues"
