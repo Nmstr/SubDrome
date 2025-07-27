@@ -110,7 +110,7 @@ Rectangle {
                 id: errorLabel
                 color: "red"
                 visible: false
-                text: "dfrsljknödfjksöl"
+                text: ""
             }
         }
     }

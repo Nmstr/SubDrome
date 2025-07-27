@@ -69,7 +69,8 @@ class ConfigHandler:
 
 class LoginHandler(QObject):
     loginFailed = Signal(str)
-    loginSuccess = Signal(str)
+    loginSuccess = Signal()
+    loggedOut = Signal()
 
     def __init__(self, config_handler: ConfigHandler):
         super().__init__()
@@ -143,8 +144,19 @@ class LoginHandler(QObject):
             keyring.set_password("SubDrome", "token", token)
             self.config_handler.server_address = url
             self.config_handler.username = username
-        self.loginSuccess.emit("Logged in")
+        self.loginSuccess.emit()
         return True
+
+    @Slot()
+    def logout(self):
+        """
+        Handle the logout process by clearing the saved credentials.
+        """
+        keyring.delete_password("SubDrome", "salt")
+        keyring.delete_password("SubDrome", "token")
+        self.config_handler.server_address = ""
+        self.config_handler.username = ""
+        self.loggedOut.emit()
 
 if __name__ == "__main__":
     app = QGuiApplication(sys.argv)

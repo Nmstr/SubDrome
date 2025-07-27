@@ -31,6 +31,12 @@ Rectangle {
                 width: 0
                 height: 0
             }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    settingsDropdown.visible = !settingsDropdown.visible;
+                }
+            }
         }
     }
 

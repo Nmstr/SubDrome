@@ -42,4 +42,15 @@ Rectangle {
         }
         implicitHeight: 100
     }
+
+    SettingsDropdown {
+        id: settingsDropdown
+        visible: false
+        anchors {
+            right: header.right
+            top: header.bottom
+            topMargin: -header.height / 2
+            rightMargin: header.height / 2
+        }
+    }
 }

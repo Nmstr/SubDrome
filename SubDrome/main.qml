@@ -20,5 +20,9 @@ ApplicationWindow {
         function onLoginSuccess() {
             pageLoader.source = "Player.qml";
         }
+
+        function onLoggedOut() {
+            pageLoader.source = "Login.qml";
+        }
     }
 }
