@@ -22,7 +22,7 @@ Rectangle {
             onClicked: { } }
         SidebarItem { visible: sidebar.albumsExpanded; x: 24;
             iconSource: "qrc:/icons/shuffle.svg"; label: "Random";
-            onClicked: { contentStack.currentIndex = 0; apiHandler.get_random_albums() } }
+            onClicked: { contentStack.currentIndex = 0; apiHandler.get_albums("random") } }
         SidebarItem { visible: sidebar.albumsExpanded; x: 24;
             iconSource: "qrc:/icons/favourite.svg"; label: "Favourites";
             onClicked: { } }

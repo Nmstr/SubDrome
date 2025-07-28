@@ -53,8 +53,8 @@ class ApiHandler(QObject):
             pass
         return ""
 
-    @Slot()
-    def get_random_albums(self):
+    @Slot(str)
+    def get_albums(self, album_type: str) -> None:
         """
         Fetch random albums from the server.
         :return: A list of random albums or an empty list if the request fails.
@@ -66,7 +66,7 @@ class ApiHandler(QObject):
             "c": "SubDromeClient",
             "v": "1.0",
             "f": "json",
-            "type": "random",
+            "type": album_type,
             "size": 20
         }
         try:
