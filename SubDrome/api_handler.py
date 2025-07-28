@@ -5,6 +5,7 @@ import os
 class ApiHandler(QObject):
     albumsUpdated = Signal("QVariant")
     coverReady = Signal(str, str)
+    albumDetailsReceived = Signal(str, str, str, "QVariant")
 
     def __init__(self, config_handler):
         super().__init__()
@@ -85,3 +86,44 @@ class ApiHandler(QObject):
                 self.albumsUpdated.emit(albums)
         except requests.RequestException:
             pass
+
+    @Slot(str)
+    def get_album_details(self, album_id: str) -> dict:
+        """
+        Fetch details of a specific album from the server.
+        :param album_id: The ID of the album to fetch details for.
+        :return: A dictionary containing album details or an empty dictionary if the request fails.
+        """
+        params = {
+            "u": self.config_handler.username,
+            "t": self.config_handler.token,
+            "s": self.config_handler.salt,
+            "c": "SubDromeClient",
+            "v": "1.0",
+            "f": "json",
+            "id": album_id
+        }
+        try:
+            response = requests.get(f"{self.config_handler.server_address}/rest/getAlbum", params=params)
+            if response.status_code == 200 and response.json().get("subsonic-response", {}).get("status") == "ok":
+                album_details = response.json().get("subsonic-response", {}).get("album", {})
+
+                song_list = []
+                for song in album_details.get("song", []):
+                    song_list.append([
+                        song.get("title", ""),
+                        song.get("artist", ""),
+                        song.get("duration", 0),
+                    ])
+
+                cover_art_path = self.get_cover_art(album_details.get("coverArt", ""))
+                self.albumDetailsReceived.emit(
+                    album_details.get("name"),
+                    album_details.get("artist"),
+                    cover_art_path,
+                    song_list
+                )
+                return response.json().get("subsonic-response", {}).get("album", {})
+        except requests.RequestException:
+            pass
+        return {}

@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Layouts 2.15
 
 Rectangle {
     Header {
@@ -32,13 +33,21 @@ Rectangle {
             implicitWidth: 250
         }
 
-        AlbumDisplay {
-            id: albumDisplay
+        StackLayout {
+            id: contentStack
             anchors {
                 left: sidebar.right
                 right: parent.right
                 top: parent.top
                 bottom: parent.bottom
+            }
+
+            AlbumDisplay {
+                id: albumDisplay
+            }
+
+            AlbumPage {
+                id: albumPage
             }
         }
     }

@@ -48,6 +48,14 @@ Rectangle {
                         wrapMode: Text.NoWrap
                     }
                 }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        apiHandler.get_album_details(model.id);
+                        contentStack.currentIndex = 1;
+                    }
+                }
             }
         }
     }
@@ -71,7 +79,6 @@ Rectangle {
         }
 
         function onCoverReady(albumId, coverPath) {
-            console.log(albumId, coverPath);
             for (var i = 0; i < albumModel.count; ++i) {
                 if (albumModel.get(i).id === albumId) {
                     albumModel.setProperty(i, "cover_path", coverPath);
