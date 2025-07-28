@@ -29,7 +29,17 @@ Rectangle {
                 bottom: parent.bottom
             }
 
-            implicitWidth: 50
+            implicitWidth: 250
+        }
+
+        AlbumDisplay {
+            id: albumDisplay
+            anchors {
+                left: sidebar.right
+                right: parent.right
+                top: parent.top
+                bottom: parent.bottom
+            }
         }
     }
 
