@@ -29,7 +29,7 @@ Rectangle {
                     anchors.centerIn: parent
 
                     Image {
-                        source: model.cover
+                        source: model.cover_path
                         width: 190
                         height: 190
                         fillMode: Image.PreserveAspectFit
@@ -64,8 +64,18 @@ Rectangle {
                     id: album[0],
                     title: album[1],
                     artist: album[2],
-                    cover: album[3]
+                    cover_path: album[3]
                 });
+            }
+        }
+
+        function onCoverReady(albumId, coverPath) {
+            console.log(albumId, coverPath);
+            for (var i = 0; i < albumModel.count; ++i) {
+                if (albumModel.get(i).id === albumId) {
+                    albumModel.setProperty(i, "cover_path", coverPath);
+                    break;
+                }
             }
         }
     }

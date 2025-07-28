@@ -1,18 +1,21 @@
-from PySide6.QtCore import QObject, Slot, Signal
+from PySide6.QtCore import QObject, Slot, Signal, QThreadPool
 import requests
 import os
 
 class ApiHandler(QObject):
     albumsUpdated = Signal("QVariant")
+    coverReady = Signal(str, str)
 
     def __init__(self, config_handler):
         super().__init__()
         self.config_handler = config_handler
+        self.thread_manager = QThreadPool()
 
-    def get_cover_art(self, cover_id: str) -> str:
+    def get_cover_art(self, cover_id: str, album_id: str = None) -> str:
         """
         Fetch cover art from the server.
         :param cover_id: The ID of the cover art to fetch.
+        :param album_id: The ID of the album (optional, required for signal to emit).
         :return: The path to the cover art
         """
         cache_dir = os.path.expanduser(os.path.join("~", ".cache", "SubDrome"))
@@ -20,6 +23,8 @@ class ApiHandler(QObject):
             os.makedirs(cache_dir)
         cover_file_path = os.path.join(cache_dir, f"{cover_id}.jpg")
         if os.path.exists(cover_file_path):
+            if album_id:
+                self.coverReady.emit(album_id, cover_file_path)
             return cover_file_path
 
         params = {
@@ -40,6 +45,8 @@ class ApiHandler(QObject):
                 except ValueError:  # Invalid JSON means we got the image data - this is cursed
                     with open(cover_file_path, "wb") as cover:
                         cover.write(response.content)
+                    if album_id:
+                        self.coverReady.emit(album_id, cover_file_path)
                     return cover_file_path
         except requests.RequestException:
             pass
@@ -59,19 +66,21 @@ class ApiHandler(QObject):
             "v": "1.0",
             "f": "json",
             "type": "random",
-            "size": 15
+            "size": 20
         }
         try:
             response = requests.get(f"{self.config_handler.server_address}/rest/getAlbumList2", params=params)
             if response.status_code == 200 and response.json().get("subsonic-response", {}).get("status") == "ok":
                 albums = []
                 for album in response.json().get("subsonic-response", {}).get("albumList2", {}).get("album", []):
-                    cover_art_path = self.get_cover_art(album.get("coverArt", ""))
+                    cover_id = album.get("coverArt", "")
+                    album_id = album.get("id", "")
+                    self.thread_manager.start(lambda cid=cover_id, aid=album_id: self.get_cover_art(cid, aid))
                     albums.append([
-                        album.get("id"),
+                        album_id,
                         album.get("name"),
                         album.get("artist"),
-                        cover_art_path
+                        f"{os.getcwd()}/assets/icons/material/album.svg"
                     ])
                 self.albumsUpdated.emit(albums)
         except requests.RequestException:
