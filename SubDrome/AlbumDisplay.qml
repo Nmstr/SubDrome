@@ -10,6 +10,7 @@ Rectangle {
         anchors.margins: 20
         color: "#424242"
         radius: 10
+        clip: true
 
         GridView {
             id: grid
