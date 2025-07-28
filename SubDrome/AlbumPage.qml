@@ -45,7 +45,34 @@ Rectangle {
             font.pixelSize: 18
             color: "lightgray"
         }
+
+        ListView {
+            id: songListView
+            clip: true
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: coverImage.bottom
+                bottom: parent.bottom
+                margins: 20
+            }
+            model: songListModel
+
+            delegate: Rectangle {
+                width: parent.width
+                height: 40
+                color: index % 2 === 0 ? "#333" : "#222"
+                Row {
+                    spacing: 10
+                    Text { text: name; color: "white" }
+                    Text { text: artist; color: "lightgray" }
+                    Text { text: duration + "s"; color: "gray" }
+                }
+            }
+        }
     }
+
+    ListModel { id: songListModel }
 
     Connections {
         target: apiHandler
@@ -55,6 +82,15 @@ Rectangle {
             coverImage.source = cover_path;
             albumTitle.text = name;
             artistName.text = artist;
+            songListModel.clear();
+            for (var i = 0; i < songs.length; i++) {
+                var song = songs[i];
+                songListModel.append({
+                    name: song[0],
+                    artist: song[1],
+                    duration: song[2]
+                });
+            }
         }
     }
 }
