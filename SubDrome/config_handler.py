@@ -11,6 +11,9 @@ class ConfigHandler:
         self.config = configparser.ConfigParser()
         self.config.read(self.config_file)
 
+        self.cached_token = keyring.get_password("SubDrome", "token") or ""
+        self.cached_salt = keyring.get_password("SubDrome", "salt") or ""
+
     @property
     def username(self):
         if not self.config.has_section("Server"):
@@ -45,16 +48,28 @@ class ConfigHandler:
 
     @property
     def token(self):
-        return keyring.get_password("SubDrome", "token") or ""
+        return self.cached_token
 
     @token.setter
     def token(self, value):
+        self.cached_token = value
         keyring.set_password("SubDrome", "token", value)
+
+    @token.deleter
+    def token(self):
+        self.cached_token = ""
+        keyring.delete_password("SubDrome", "token")
 
     @property
     def salt(self):
-        return keyring.get_password("SubDrome", "salt") or ""
+        return self.cached_salt
 
     @salt.setter
     def salt(self, value):
+        self.cached_salt = value
         keyring.set_password("SubDrome", "salt", value)
+
+    @salt.deleter
+    def salt(self):
+        self.cached_salt = ""
+        keyring.delete_password("SubDrome", "salt")
