@@ -5,7 +5,11 @@ from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 import sys
 
-if __name__ == "__main__":
+def main() -> None:
+    """
+    Main function to start SubDrome
+    :return: None
+    """
     app = QGuiApplication(sys.argv)
 
     engine = QQmlApplicationEngine()
@@ -25,3 +29,6 @@ if __name__ == "__main__":
                                write=False)
 
     sys.exit(app.exec())
+
+if __name__ == "__main__":
+    main()
