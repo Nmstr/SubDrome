@@ -1,6 +1,7 @@
 from SubDrome import resource_rc  # noqa: F401
 from config_handler import ConfigHandler
 from login_handler import LoginHandler
+from api_handler import ApiHandler
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 import sys
@@ -18,6 +19,8 @@ def main() -> None:
     config_handler = ConfigHandler()
     login_handler = LoginHandler(config_handler)
     engine.rootContext().setContextProperty("loginHandler", login_handler)
+    api_handler = ApiHandler(config_handler)
+    engine.rootContext().setContextProperty("apiHandler", api_handler)
     engine.load("SubDrome/main.qml")
 
     # Try to log in with saved credentials

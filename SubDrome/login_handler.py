@@ -1,7 +1,6 @@
 from PySide6.QtCore import QObject, Slot, Signal
 import validators
 import requests
-import keyring
 import hashlib
 import os
 
@@ -78,8 +77,8 @@ class LoginHandler(QObject):
             return False
 
         if write:
-            keyring.set_password("SubDrome", "salt", salt)
-            keyring.set_password("SubDrome", "token", token)
+            self.config_handler.token = token
+            self.config_handler.salt = salt
             self.config_handler.server_address = url
             self.config_handler.username = username
         self.loginSuccess.emit()
@@ -90,8 +89,8 @@ class LoginHandler(QObject):
         """
         Handle the logout process by clearing the saved credentials.
         """
-        keyring.delete_password("SubDrome", "salt")
-        keyring.delete_password("SubDrome", "token")
+        del self.config_handler.token
+        del self.config_handler.salt
         self.config_handler.server_address = ""
         self.config_handler.username = ""
         self.loggedOut.emit()
