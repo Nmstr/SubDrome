@@ -2,7 +2,6 @@ import QtQuick 2.15
 
 Rectangle {
     id: albumPage
-    anchors.fill: parent
     color: "transparent"
 
     Rectangle {
@@ -93,7 +92,6 @@ Rectangle {
         target: apiHandler
 
         function onAlbumDetailsReceived(name, artist, cover_path, songs) {
-            console.log(name, artist, cover_path, songs);
             coverImage.source = cover_path;
             albumTitle.text = name;
             artistName.text = artist;
