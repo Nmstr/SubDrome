@@ -154,7 +154,7 @@ Rectangle {
             to: 100
             stepSize: 1
             onValueChanged: {
-                console.log("Volume changed to:", value);
+                playbackHandler.set_volume(value / 100);
             }
         }
     }
