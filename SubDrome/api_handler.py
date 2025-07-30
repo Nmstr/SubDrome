@@ -19,7 +19,7 @@ class ApiHandler(QObject):
         :param album_id: The ID of the album (optional, required for signal to emit).
         :return: The path to the cover art
         """
-        cache_dir = os.path.expanduser(os.path.join("~", ".cache", "SubDrome"))
+        cache_dir = os.path.expanduser(os.path.join("~", ".cache", "SubDrome", "covers"))
         if not os.path.exists(cache_dir):
             os.makedirs(cache_dir)
         cover_file_path = os.path.join(cache_dir, f"{cover_id}.jpg")
@@ -128,3 +128,32 @@ class ApiHandler(QObject):
         except requests.RequestException:
             pass
         return {}
+
+    def download_song(self, song_id: str) -> str:
+        """
+        Download a song by its ID.
+        :param song_id: The ID of the song to download.
+        :return: The path to the downloaded song file.
+        """
+        params = {
+            "u": self.config_handler.username,
+            "t": self.config_handler.token,
+            "s": self.config_handler.salt,
+            "c": "SubDromeClient",
+            "v": "1.0",
+            "f": "json",
+            "id": song_id
+        }
+        try:
+            response = requests.get(f"{self.config_handler.server_address}/rest/download", params=params)
+            if response.status_code == 200:
+                cache_dir = os.path.expanduser(os.path.join("~", ".cache", "SubDrome", "songs"))
+                if not os.path.exists(cache_dir):
+                    os.makedirs(cache_dir)
+                song_file_path = os.path.join(cache_dir, f"{song_id}.mp3")
+                with open(song_file_path, "wb") as song_file:
+                    song_file.write(response.content)
+                return song_file_path
+        except requests.RequestException:
+            pass
+        return ""
