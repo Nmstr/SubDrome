@@ -92,6 +92,7 @@ Rectangle {
             spacing: 10
 
             Text {
+                id: positionText
                 text: "00:00"
                 color: "white"
                 font.pixelSize: 14
@@ -109,7 +110,8 @@ Rectangle {
             }
 
             Text {
-                text: "04:30"
+                id: durationText
+                text: "00:00"
                 color: "white"
                 font.pixelSize: 14
             }
@@ -156,6 +158,21 @@ Rectangle {
             onValueChanged: {
                 playbackHandler.set_volume(value / 100);
             }
+        }
+    }
+
+    Connections {
+        target: playbackHandler
+
+        function onNewSong(title, artist, duration) {
+            songInfo.children[0].text = title;
+            songInfo.children[1].text = artist;
+            let song_minutes = Math.floor(duration / 60);
+            let song_seconds = duration % 60;
+            durationText.text = song_minutes.toString().padStart(2, '0') + ":" + song_seconds.toString().padStart(2, '0');
+            positionText.text = "00:00";
+            positionSlider.value = 0;
+            positionSlider.to = duration;
         }
     }
 }

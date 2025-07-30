@@ -1,7 +1,9 @@
-from PySide6.QtCore import QObject, Slot
+from PySide6.QtCore import QObject, Slot, Signal
 import PySoundSphere
 
 class PlaybackHandler(QObject):
+    newSong = Signal(str, str, int)
+
     def __init__(self, api_handler) -> None:
         super().__init__()
         self.api_handler = api_handler
@@ -27,3 +29,5 @@ class PlaybackHandler(QObject):
         self.audio_player.stop()  # No effect if not playing
         self.audio_player.load(path)
         self.audio_player.play()
+        song_details = self.api_handler.get_song_details(song_id)
+        self.newSong.emit(song_details.get("title", "Unknown Title"), song_details.get("artist", "Unknown Artist"), song_details.get("duration", 0))

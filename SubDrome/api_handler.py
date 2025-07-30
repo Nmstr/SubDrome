@@ -129,6 +129,29 @@ class ApiHandler(QObject):
             pass
         return {}
 
+    def get_song_details(self, song_id: str) -> dict:
+        """
+        Fetch details of a specific song from the server.
+        :param song_id: The ID of the song to fetch details for.
+        :return: A dictionary containing song details or an empty dictionary if the request fails.
+        """
+        params = {
+            "u": self.config_handler.username,
+            "t": self.config_handler.token,
+            "s": self.config_handler.salt,
+            "c": "SubDromeClient",
+            "v": "1.0",
+            "f": "json",
+            "id": song_id
+        }
+        try:
+            response = requests.get(f"{self.config_handler.server_address}/rest/getSong", params=params)
+            if response.status_code == 200 and response.json().get("subsonic-response", {}).get("status") == "ok":
+                return response.json().get("subsonic-response", {}).get("song", {})
+        except requests.RequestException:
+            pass
+        return {}
+
     def download_song(self, song_id: str) -> str:
         """
         Download a song by its ID.
