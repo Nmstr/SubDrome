@@ -1,13 +1,19 @@
-from PySide6.QtCore import QObject, Slot, Signal
+from PySide6.QtCore import QObject, Slot, Signal, QTimer
 import PySoundSphere
 
 class PlaybackHandler(QObject):
     newSong = Signal(str, str, int)
+    positionChanged = Signal(int)
 
     def __init__(self, api_handler) -> None:
         super().__init__()
         self.api_handler = api_handler
         self.audio_player = PySoundSphere.AudioPlayer("pygame")
+
+        self.position_timer = QTimer(self)
+        self.position_timer.setInterval(1000)
+        self.position_timer.timeout.connect(self.update_position)
+        self.position_timer.start()
 
     @Slot(float)
     def set_volume(self, volume: float) -> None:
@@ -16,6 +22,23 @@ class PlaybackHandler(QObject):
         :param volume: Volume level (0 - 1).
         """
         self.audio_player.volume = volume
+
+    def update_position(self) -> None:
+        """
+        Updates the current playback position.
+        Called once per second.
+        """
+        position = self.audio_player.position
+        self.positionChanged.emit(position)
+
+    @Slot(float)
+    def set_position(self, position: float) -> None:
+        """
+        Set the playback position of the audio player.
+        :param position: Position in seconds.
+        """
+        self.audio_player.position = position
+        self.positionChanged.emit(position)
 
     @Slot(str)
     def play_song(self, song_id: str) -> None:

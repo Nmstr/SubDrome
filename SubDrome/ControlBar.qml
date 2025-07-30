@@ -105,7 +105,9 @@ Rectangle {
                 to: 100
                 stepSize: 1
                 onValueChanged: {
-                    console.log("Positon changed to:", value);
+                    if (pressed) {
+                        playbackHandler.set_position(value);
+                    }
                 }
             }
 
@@ -174,5 +176,13 @@ Rectangle {
             positionSlider.value = 0;
             positionSlider.to = duration;
         }
+
+        function onPositionChanged(position) {
+            positionSlider.value = position;
+            let position_minutes = Math.floor(position / 60);
+            let position_seconds = position % 60;
+            positionText.text = position_minutes.toString().padStart(2, '0') + ":" + position_seconds.toString().padStart(2, '0');
+        }
+
     }
 }
