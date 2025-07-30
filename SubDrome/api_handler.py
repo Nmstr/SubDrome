@@ -111,6 +111,7 @@ class ApiHandler(QObject):
                 song_list = []
                 for song in album_details.get("song", []):
                     song_list.append([
+                        song.get("id", ""),
                         song.get("title", ""),
                         song.get("artist", ""),
                         song.get("duration", 0),

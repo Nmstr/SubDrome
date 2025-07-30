@@ -2,6 +2,7 @@ from SubDrome import resource_rc  # noqa: F401
 from config_handler import ConfigHandler
 from login_handler import LoginHandler
 from api_handler import ApiHandler
+from playback_handler import PlaybackHandler
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 import sys
@@ -21,6 +22,8 @@ def main() -> None:
     engine.rootContext().setContextProperty("loginHandler", login_handler)
     api_handler = ApiHandler(config_handler)
     engine.rootContext().setContextProperty("apiHandler", api_handler)
+    playback_handler = PlaybackHandler(api_handler)
+    engine.rootContext().setContextProperty("playbackHandler", playback_handler)
     engine.load("SubDrome/main.qml")
 
     # Try to log in with saved credentials
