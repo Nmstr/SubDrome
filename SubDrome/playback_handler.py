@@ -24,5 +24,6 @@ class PlaybackHandler(QObject):
         path = self.api_handler.download_song(song_id)
         if not path:
             return  # If the path is empty, the song could not be downloaded
+        self.audio_player.stop()  # No effect if not playing
         self.audio_player.load(path)
         self.audio_player.play()
