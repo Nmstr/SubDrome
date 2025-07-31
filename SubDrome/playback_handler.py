@@ -2,7 +2,7 @@ from PySide6.QtCore import QObject, Slot, Signal, QTimer
 import PySoundSphere
 
 class PlaybackHandler(QObject):
-    newSong = Signal(str, str, int)
+    newSong = Signal(str, str, int, str)
     positionChanged = Signal(int)
     isPlaying = Signal(bool)
 
@@ -54,7 +54,8 @@ class PlaybackHandler(QObject):
         self.audio_player.load(path)
         self.audio_player.play()
         song_details = self.api_handler.get_song_details(song_id)
-        self.newSong.emit(song_details.get("title", "Unknown Title"), song_details.get("artist", "Unknown Artist"), song_details.get("duration", 0))
+        art_path = self.api_handler.get_cover_art(song_details.get("coverArt", ""))
+        self.newSong.emit(song_details.get("title", "Unknown Title"), song_details.get("artist", "Unknown Artist"), song_details.get("duration", 0), art_path)
         self.isPlaying.emit(True)
 
     @Slot()

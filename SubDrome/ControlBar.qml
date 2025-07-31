@@ -173,7 +173,7 @@ Rectangle {
     Connections {
         target: playbackHandler
 
-        function onNewSong(title, artist, duration) {
+        function onNewSong(title, artist, duration, art_path) {
             songInfo.children[0].text = title;
             songInfo.children[1].text = artist;
             let song_minutes = Math.floor(duration / 60);
@@ -182,6 +182,7 @@ Rectangle {
             positionText.text = "00:00";
             positionSlider.value = 0;
             positionSlider.to = duration;
+            songIcon.source = art_path || "qrc:/icons/song.svg";
         }
 
         function onPositionChanged(position) {
