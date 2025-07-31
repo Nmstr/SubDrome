@@ -171,6 +171,13 @@ Rectangle {
                 playbackHandler.set_volume(value / 100);
             }
         }
+
+        Text {
+            anchors.verticalCenter: parent.verticalCenter
+            text: Math.round(volumeSlider.value) + "%"
+            color: "white"
+            font.pixelSize: 14
+        }
     }
 
     Connections {
