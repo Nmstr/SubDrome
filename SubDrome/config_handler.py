@@ -73,3 +73,19 @@ class ConfigHandler:
     def salt(self):
         self.cached_salt = ""
         keyring.delete_password("SubDrome", "salt")
+
+    @property
+    def volume(self):
+        if not self.config.has_section("Playback"):
+            self.config.add_section("Playback")
+        if not self.config.has_option("Playback", "volume"):
+            return 0.5
+        return self.config.getfloat("Playback", "volume")
+
+    @volume.setter
+    def volume(self, value):
+        if not self.config.has_section("Playback"):
+            self.config.add_section("Playback")
+        self.config.set("Playback", "volume", str(value))
+        with open(self.config_file, "w") as f:
+            self.config.write(f)

@@ -2,7 +2,6 @@ import QtQuick 2.15
 
 Rectangle {
     id: albumPage
-    anchors.fill: parent
     color: "transparent"
 
     Rectangle {
@@ -64,6 +63,21 @@ Rectangle {
                 color: index % 2 === 0 ? "#333" : "#222"
                 Row {
                     spacing: 10
+                    Image {
+                        source: "qrc:/icons/play.svg"
+                        sourceSize: Qt.size(24, 24)
+                        Image {
+                            source: parent.source
+                            width: 0
+                            height: 0
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                playbackHandler.play_song(songListModel.get(index).id);
+                            }
+                        }
+                    }
                     Text { text: name; color: "white" }
                     Text { text: artist; color: "lightgray" }
                     Text { text: duration + "s"; color: "gray" }
@@ -78,7 +92,6 @@ Rectangle {
         target: apiHandler
 
         function onAlbumDetailsReceived(name, artist, cover_path, songs) {
-            console.log(name, artist, cover_path, songs);
             coverImage.source = cover_path;
             albumTitle.text = name;
             artistName.text = artist;
@@ -86,9 +99,10 @@ Rectangle {
             for (var i = 0; i < songs.length; i++) {
                 var song = songs[i];
                 songListModel.append({
-                    name: song[0],
-                    artist: song[1],
-                    duration: song[2]
+                    id: song[0],
+                    name: song[1],
+                    artist: song[2],
+                    duration: song[3]
                 });
             }
         }
