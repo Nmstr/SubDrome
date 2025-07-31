@@ -57,6 +57,7 @@ class PlaybackHandler(QObject):
         self.audio_player.position = position
         self.positionChanged.emit(position)
 
+    @Slot()
     def next_song(self) -> None:
         """
         Play the next song in the queue.
