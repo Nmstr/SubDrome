@@ -53,10 +53,11 @@ class PlaybackHandler(QObject):
         self.audio_player.position = position
         self.positionChanged.emit(position)
 
-    @Slot(str)
-    def play_song(self, song_id: str) -> None:
+    @Slot(str, str)
+    def play_song(self, album_id: str, song_id: str) -> None:
         """
         Play a song by its ID.
+        :param album_id: The ID of the album containing the song.
         :param song_id: The ID of the song to play.
         """
         path = self.api_handler.download_song(song_id)
@@ -65,11 +66,29 @@ class PlaybackHandler(QObject):
         self.audio_player.stop()  # No effect if not playing
         self.audio_player.load(path)
         self.audio_player.play()
+
         song_details = self.api_handler.get_song_details(song_id)
         art_path = self.api_handler.get_cover_art(song_details.get("coverArt", ""))
         self.newSong.emit(song_details.get("title", "Unknown Title"), song_details.get("artist", "Unknown Artist"), song_details.get("duration", 0), art_path)
         self.isPlaying.emit(True)
-        self.queueUpdated.emit(song_details.get("title", ""), song_details.get("artist", ""), art_path, [])
+
+        album_details = self.api_handler.get_album_details(album_id)
+        add_songs = False
+        song_list = []
+        for song in album_details.get("song", []):
+            if not add_songs:  # Make sure to add songs only after the current song
+                if song.get("id") == song_id:
+                    add_songs = True
+                    continue
+                else:
+                    continue
+            art_path = self.api_handler.get_cover_art(song["coverArt"])
+            song_list.append([
+                song.get("title", ""),
+                song.get("artist", ""),
+                art_path,
+            ])
+        self.queueUpdated.emit(song_details.get("title", ""), song_details.get("artist", ""), art_path, song_list)
 
     @Slot()
     def pause(self) -> None:
