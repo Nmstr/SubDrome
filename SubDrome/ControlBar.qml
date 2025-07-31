@@ -68,12 +68,19 @@ Rectangle {
             }
 
             Image {
+                id: playPauseIcon
                 source: "qrc:/icons/play.svg"
                 sourceSize: Qt.size(32, 32)
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: { console.log("Play clicked") }
+                    onClicked: {
+                        if (playPauseIcon.source.toString() === "qrc:/icons/pause.svg") {
+                            playbackHandler.pause();
+                        } else {
+                            playbackHandler.play();
+                        }
+                    }
                 }
             }
 
@@ -182,6 +189,14 @@ Rectangle {
             let position_minutes = Math.floor(position / 60);
             let position_seconds = position % 60;
             positionText.text = position_minutes.toString().padStart(2, '0') + ":" + position_seconds.toString().padStart(2, '0');
+        }
+
+        function onIsPlaying(isPlaying) {
+            if (isPlaying) {
+                playPauseIcon.source = "qrc:/icons/pause.svg";
+            } else {
+                playPauseIcon.source = "qrc:/icons/play.svg";
+            }
         }
 
     }

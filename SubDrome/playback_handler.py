@@ -4,6 +4,7 @@ import PySoundSphere
 class PlaybackHandler(QObject):
     newSong = Signal(str, str, int)
     positionChanged = Signal(int)
+    isPlaying = Signal(bool)
 
     def __init__(self, api_handler) -> None:
         super().__init__()
@@ -54,3 +55,23 @@ class PlaybackHandler(QObject):
         self.audio_player.play()
         song_details = self.api_handler.get_song_details(song_id)
         self.newSong.emit(song_details.get("title", "Unknown Title"), song_details.get("artist", "Unknown Artist"), song_details.get("duration", 0))
+        self.isPlaying.emit(True)
+
+    @Slot()
+    def pause(self) -> None:
+        """
+        Pause the currently playing song.
+        """
+        self.audio_player.pause()
+        self.isPlaying.emit(False)
+
+    @Slot()
+    def play(self) -> None:
+        """
+        Resume the currently paused song.
+        """
+        try:
+            self.audio_player.play()
+            self.isPlaying.emit(True)
+        except ValueError:
+            pass  # No song is loaded
