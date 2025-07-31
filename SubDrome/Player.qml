@@ -33,11 +33,22 @@ Rectangle {
             implicitWidth: 250
         }
 
+        QueueDisplay {
+            id: queueDisplay
+            anchors {
+                right: parent.right
+                top: parent.top
+                bottom: parent.bottom
+            }
+
+            implicitWidth: 350
+        }
+
         StackLayout {
             id: contentStack
             anchors {
                 left: sidebar.right
-                right: parent.right
+                right: queueDisplay.left
                 top: parent.top
                 bottom: parent.bottom
             }

@@ -5,6 +5,7 @@ class PlaybackHandler(QObject):
     newSong = Signal(str, str, int, str)
     positionChanged = Signal(int)
     isPlaying = Signal(bool)
+    queueUpdated = Signal(str, str, str, "QVariant")
 
     def __init__(self, api_handler, config_handler) -> None:
         super().__init__()
@@ -68,6 +69,7 @@ class PlaybackHandler(QObject):
         art_path = self.api_handler.get_cover_art(song_details.get("coverArt", ""))
         self.newSong.emit(song_details.get("title", "Unknown Title"), song_details.get("artist", "Unknown Artist"), song_details.get("duration", 0), art_path)
         self.isPlaying.emit(True)
+        self.queueUpdated.emit(song_details.get("title", ""), song_details.get("artist", ""), art_path, [])
 
     @Slot()
     def pause(self) -> None:
