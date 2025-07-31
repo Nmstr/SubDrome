@@ -3,6 +3,7 @@ import QtQuick 2.15
 Rectangle {
     id: albumPage
     color: "transparent"
+    property string albumId: "";
 
     Rectangle {
         anchors.fill: parent
@@ -74,7 +75,7 @@ Rectangle {
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {
-                                playbackHandler.play_song(songListModel.get(index).id);
+                                playbackHandler.play_song(albumPage.albumId, songListModel.get(index).id);
                             }
                         }
                     }
@@ -91,7 +92,8 @@ Rectangle {
     Connections {
         target: apiHandler
 
-        function onAlbumDetailsReceived(name, artist, cover_path, songs) {
+        function onAlbumDetailsReceived(id, name, artist, cover_path, songs) {
+            albumPage.albumId = id;
             coverImage.source = cover_path;
             albumTitle.text = name;
             artistName.text = artist;

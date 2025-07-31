@@ -5,7 +5,7 @@ import os
 class ApiHandler(QObject):
     albumsUpdated = Signal("QVariant")
     coverReady = Signal(str, str)
-    albumDetailsReceived = Signal(str, str, str, "QVariant")
+    albumDetailsReceived = Signal(str, str, str, str, "QVariant")
 
     def __init__(self, config_handler):
         super().__init__()
@@ -119,6 +119,7 @@ class ApiHandler(QObject):
 
                 cover_art_path = self.get_cover_art(album_details.get("coverArt", ""))
                 self.albumDetailsReceived.emit(
+                    album_details.get("id", ""),
                     album_details.get("name"),
                     album_details.get("artist"),
                     cover_art_path,
