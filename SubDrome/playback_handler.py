@@ -12,7 +12,11 @@ class PlaybackHandler(QObject):
         self.api_handler = api_handler
         self.config_handler = config_handler
         self.audio_player = PySoundSphere.AudioPlayer("pygame")
+        self.audio_player.set_callback_function(self.next_song)
         self.audio_player.volume = self.config_handler.volume
+
+        self.current_album_id = ""
+        self.current_song_id = ""
 
         self.position_timer = QTimer(self)
         self.position_timer.setInterval(1000)
@@ -53,6 +57,25 @@ class PlaybackHandler(QObject):
         self.audio_player.position = position
         self.positionChanged.emit(position)
 
+    def next_song(self) -> None:
+        """
+        Play the next song in the queue.
+        If no next song is available, it will stop playback.
+        """
+        if not self.current_album_id or not self.current_song_id:
+            return
+        album_details = self.api_handler.get_album_details(self.current_album_id)
+        song_list = album_details.get("song", [])
+        if not song_list:
+                return
+        current_index = next((i for i, song in enumerate(song_list) if song.get("id") == self.current_song_id), -1)
+        if current_index == -1 or current_index + 1 >= len(song_list):
+            self.audio_player.stop()
+            self.isPlaying.emit(False)
+            return
+        next_song = song_list[current_index + 1]
+        self.play_song(next_song.get("albumId", ""), next_song.get("id", ""))
+
     @Slot(str, str)
     def play_song(self, album_id: str, song_id: str) -> None:
         """
@@ -71,6 +94,9 @@ class PlaybackHandler(QObject):
         art_path = self.api_handler.get_cover_art(song_details.get("coverArt", ""))
         self.newSong.emit(song_details.get("title", "Unknown Title"), song_details.get("artist", "Unknown Artist"), song_details.get("duration", 0), art_path)
         self.isPlaying.emit(True)
+
+        self.current_song_id = song_id
+        self.current_album_id = album_id
 
         album_details = self.api_handler.get_album_details(album_id)
         add_songs = False
