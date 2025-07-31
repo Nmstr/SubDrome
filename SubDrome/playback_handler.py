@@ -58,6 +58,26 @@ class PlaybackHandler(QObject):
         self.positionChanged.emit(position)
 
     @Slot()
+    def previous_song(self) -> None:
+        """
+        Play the previous song in the queue.
+        If no previous song is available, it will stop playback.
+        """
+        if not self.current_album_id or not self.current_song_id:
+            return
+        album_details = self.api_handler.get_album_details(self.current_album_id)
+        song_list = album_details.get("song", [])
+        if not song_list:
+            return
+        current_index = next((i for i, song in enumerate(song_list) if song.get("id") == self.current_song_id), -1)
+        if current_index <= 0:
+            self.audio_player.pause()
+            self.isPlaying.emit(False)
+            return
+        previous_song = song_list[current_index - 1]
+        self.play_song(previous_song.get("albumId", ""), previous_song.get("id", ""))
+
+    @Slot()
     def next_song(self) -> None:
         """
         Play the next song in the queue.
