@@ -63,7 +63,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: { console.log("Previous clicked") }
+                    onClicked: { playbackHandler.previous_song(); }
                 }
             }
 
@@ -90,7 +90,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: { console.log("Next clicked") }
+                    onClicked: { playbackHandler.next_song(); }
                 }
             }
         }
