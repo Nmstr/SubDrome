@@ -22,7 +22,7 @@ def main() -> None:
     engine.rootContext().setContextProperty("loginHandler", login_handler)
     api_handler = ApiHandler(config_handler)
     engine.rootContext().setContextProperty("apiHandler", api_handler)
-    playback_handler = PlaybackHandler(api_handler)
+    playback_handler = PlaybackHandler(api_handler, config_handler)
     engine.rootContext().setContextProperty("playbackHandler", playback_handler)
     engine.load("SubDrome/main.qml")
 

@@ -6,10 +6,12 @@ class PlaybackHandler(QObject):
     positionChanged = Signal(int)
     isPlaying = Signal(bool)
 
-    def __init__(self, api_handler) -> None:
+    def __init__(self, api_handler, config_handler) -> None:
         super().__init__()
         self.api_handler = api_handler
+        self.config_handler = config_handler
         self.audio_player = PySoundSphere.AudioPlayer("pygame")
+        self.audio_player.volume = self.config_handler.volume
 
         self.position_timer = QTimer(self)
         self.position_timer.setInterval(1000)
@@ -23,6 +25,15 @@ class PlaybackHandler(QObject):
         :param volume: Volume level (0 - 1).
         """
         self.audio_player.volume = volume
+        self.config_handler.volume = volume
+
+    @Slot(result=float)
+    def get_volume(self) -> float:
+        """
+        Get the current volume of the audio player.
+        :return: Volume level (0 - 1).
+        """
+        return self.audio_player.volume
 
     def update_position(self) -> None:
         """

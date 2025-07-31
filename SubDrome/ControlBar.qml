@@ -164,6 +164,9 @@ Rectangle {
             from: 0
             to: 100
             stepSize: 1
+            Component.onCompleted: {
+                volumeSlider.value = playbackHandler.get_volume() * 100;
+            }
             onValueChanged: {
                 playbackHandler.set_volume(value / 100);
             }
