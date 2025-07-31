@@ -9,6 +9,7 @@ Rectangle {
 
     Column {
         anchors.fill: parent
+        anchors.margins: 20
         spacing: 10
 
         SidebarItem {
