@@ -6,22 +6,10 @@ import Bars 1.0
 import Queue 1.0
 
 Rectangle {
-    Header {
-        id: header
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
-        }
-        implicitHeight: 50
-    }
-
     Rectangle {
         anchors {
-            top: header.bottom
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
+            topMargin: header.height
+            fill: parent
         }
         color: "#303030"
 
@@ -66,6 +54,16 @@ Rectangle {
         }
     }
 
+    Header {
+        id: header
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
+        implicitHeight: 50
+    }
+
     ControlBar {
         id: controlBar
         anchors {
@@ -76,14 +74,4 @@ Rectangle {
         implicitHeight: 100
     }
 
-    SettingsDropdown {
-        id: settingsDropdown
-        visible: false
-        anchors {
-            right: header.right
-            top: header.bottom
-            topMargin: -header.height / 2
-            rightMargin: header.height / 2
-        }
-    }
 }

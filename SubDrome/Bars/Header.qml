@@ -50,4 +50,15 @@ Rectangle {
         color: "white"
         font.pixelSize: 20
     }
+
+    SettingsDropdown {
+        id: settingsDropdown
+        visible: false
+        anchors {
+            right: header.right
+            top: header.bottom
+            topMargin: -header.height / 2
+            rightMargin: header.height / 2
+        }
+    }
 }
