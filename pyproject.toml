@@ -25,3 +25,8 @@ dependencies = [
 [project.urls]
 Source = "https://github.com/Nmstr/SubDrome"
 Issues = "https://github.com/Nmstr/SubDrome/issues"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+]
