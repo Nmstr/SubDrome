@@ -308,7 +308,7 @@ dependencies = [
 requires-dist = [
     { name = "keyring", specifier = ">=25.6.0" },
     { name = "pyside6", specifier = ">=6.9.1" },
-    { name = "pysoundsphere", extras = ["pygame", "pygame-backend"], specifier = ">=0.0.8" },
+    { name = "pysoundsphere", extras = ["pygame-backend"], specifier = ">=0.0.8" },
     { name = "requests", specifier = ">=2.32.4" },
     { name = "validators", specifier = ">=0.35.0" },
 ]
