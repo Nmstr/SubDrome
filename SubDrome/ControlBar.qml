@@ -71,16 +71,21 @@ Rectangle {
                 id: playPauseIcon
                 source: "qrc:/icons/play.svg"
                 sourceSize: Qt.size(32, 32)
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
+                Action {
+                    id: playPauseAction
+                    onTriggered: {
                         if (playPauseIcon.source.toString() === "qrc:/icons/pause.svg") {
                             playbackHandler.pause();
                         } else {
                             playbackHandler.play();
                         }
                     }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: playPauseAction.triggered();
                 }
             }
 
