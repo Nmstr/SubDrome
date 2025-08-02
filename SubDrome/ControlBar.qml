@@ -82,6 +82,11 @@ Rectangle {
                     }
                 }
 
+                Shortcut {
+                    sequence: "Space"
+                    onActivated: playPauseAction.triggered();
+                }
+
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
