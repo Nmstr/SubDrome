@@ -5,6 +5,7 @@ from api_handler import ApiHandler
 from playback_handler import PlaybackHandler
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
+from PySide6.QtCore import QDir
 import sys
 
 def main() -> None:
@@ -24,6 +25,7 @@ def main() -> None:
     engine.rootContext().setContextProperty("apiHandler", api_handler)
     playback_handler = PlaybackHandler(api_handler, config_handler)
     engine.rootContext().setContextProperty("playbackHandler", playback_handler)
+    engine.addImportPath(QDir.currentPath() + "/SubDrome")
     engine.load("SubDrome/main.qml")
 
     # Try to log in with saved credentials
