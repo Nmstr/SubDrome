@@ -23,5 +23,8 @@ Rectangle {
             radius: 5
             border.color: "#888"
         }
+        onTextChanged: {
+            apiHandler.search_albums(text);
+        }
     }
 }
