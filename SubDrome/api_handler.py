@@ -181,3 +181,36 @@ class ApiHandler(QObject):
         except requests.RequestException:
             pass
         return ""
+
+    @Slot(str)
+    def search_albums(self, query: str) -> None:
+        """
+        Search for albums
+        :param query: The search query.
+        """
+        params = {
+            "u": self.config_handler.username,
+            "t": self.config_handler.token,
+            "s": self.config_handler.salt,
+            "c": "SubDromeClient",
+            "v": "1.0",
+            "f": "json",
+            "query": query
+        }
+        try:
+            response = requests.get(f"{self.config_handler.server_address}/rest/search2", params=params)
+            if response.status_code == 200 and response.json().get("subsonic-response", {}).get("status") == "ok":
+                albums = []
+                for album in response.json().get("subsonic-response", {}).get("searchResult2", {}).get("album", []):
+                    cover_id = album.get("coverArt", "")
+                    album_id = album.get("id", "")
+                    self.thread_manager.start(lambda cid=cover_id, aid=album_id: self.get_cover_art(cid, aid))
+                    albums.append([
+                        album_id,
+                        album.get("name"),
+                        album.get("artist"),
+                        f"{os.getcwd()}/assets/icons/material/album.svg"
+                    ])
+                self.albumsUpdated.emit(albums)
+        except requests.RequestException:
+            pass
