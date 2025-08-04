@@ -75,7 +75,7 @@ Rectangle {
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {
-                                playbackHandler.play_song(playlistPage.playlistId, songListModel.get(index).id);
+                                playbackHandler.play_song(playlistPage.playlistId, songListModel.get(index).id, true);
                             }
                         }
                     }
@@ -93,7 +93,7 @@ Rectangle {
         target: apiHandler
 
         function onPlaylistDetailsReceived(id, name, owner, cover_path, songs) {
-            albumPage.albumId = id;
+            playlistPage.playlistId = id;
             coverImage.source = cover_path;
             playlistTitle.text = name;
             ownerName.text = owner;

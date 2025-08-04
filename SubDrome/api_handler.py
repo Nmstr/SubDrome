@@ -246,7 +246,7 @@ class ApiHandler(QObject):
             pass
 
     @Slot(str)
-    def get_playlist_details(self, playlist_id: str) -> None:
+    def get_playlist_details(self, playlist_id: str) -> dict:
         """
         Fetch details of a specific playlist from the server.
         :param playlist_id: The ID of the playlist to fetch details for.
@@ -280,5 +280,7 @@ class ApiHandler(QObject):
                     cover_art_path,
                     song_list
                 )
+                return response.json().get("subsonic-response", {}).get("playlist", {})
         except requests.RequestException:
             pass
+        return {}
