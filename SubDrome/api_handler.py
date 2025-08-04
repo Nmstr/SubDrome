@@ -6,6 +6,7 @@ class ApiHandler(QObject):
     albumsUpdated = Signal("QVariant")
     coverReady = Signal(str, str)
     albumDetailsReceived = Signal(str, str, str, str, "QVariant")
+    playlistListChanged = Signal("QVariant")
 
     def __init__(self, config_handler):
         super().__init__()
@@ -212,5 +213,32 @@ class ApiHandler(QObject):
                         f"{os.getcwd()}/assets/icons/material/album.svg"
                     ])
                 self.albumsUpdated.emit(albums)
+        except requests.RequestException:
+            pass
+
+    @Slot()
+    def update_playlist_list(self) -> None:
+        """
+        Fetch the list of playlists from the server.
+        """
+        params = {
+            "u": self.config_handler.username,
+            "t": self.config_handler.token,
+            "s": self.config_handler.salt,
+            "c": "SubDromeClient",
+            "v": "1.0",
+            "f": "json"
+        }
+        try:
+            response = requests.get(f"{self.config_handler.server_address}/rest/getPlaylists", params=params)
+            if response.status_code == 200 and response.json().get("subsonic-response", {}).get("status") == "ok":
+                playlists = []
+                for playlist in response.json().get("subsonic-response", {}).get("playlists", {}).get("playlist", []):
+                    cover_art_path = self.get_cover_art(playlist.get("coverArt", ""))
+                    playlists.append([
+                        playlist.get("name", ""),
+                        cover_art_path
+                    ])
+                self.playlistListChanged.emit(playlists)
         except requests.RequestException:
             pass

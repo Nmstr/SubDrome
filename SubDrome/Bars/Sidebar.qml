@@ -6,6 +6,7 @@ Rectangle {
     implicitWidth: 50
     color: "#303030"
     property bool albumsExpanded: false
+    property bool playlistsExpanded: false
 
     Column {
         anchors.fill: parent
@@ -45,6 +46,42 @@ Rectangle {
         SidebarItem { iconSource: "qrc:/icons/song.svg"; label: "Songs";
             onClicked: { } }
         SidebarItem { iconSource: "qrc:/icons/playlist.svg"; label: "Playlists";
-            onClicked: { } }
+            onClicked: sidebar.playlistsExpanded = !sidebar.playlistsExpanded }
+
+        ListView {
+            id: playlistsListView
+            model: playlistsListModel
+            width: parent.width
+            height: 200
+            spacing: 5
+            x: 24
+
+            delegate: SidebarItem {
+                visible: sidebar.playlistsExpanded
+                iconSource: model.cover
+                label: model.name
+            }
+
+            Component.onCompleted: {
+                apiHandler.update_playlist_list()
+            }
+        }
+    }
+
+    ListModel { id: playlistsListModel }
+
+    Connections {
+        target: apiHandler
+
+        function onPlaylistListChanged(playlists) {
+            playlistsListModel.clear();
+            for (let i = 0; i < playlists.length; i++) {
+                let playlist = playlists[i];
+                playlistsListModel.append({
+                    name: playlist[0],
+                    cover: playlist[1] || "qrc:/icons/playlist.svg",
+                });
+            }
+        }
     }
 }
