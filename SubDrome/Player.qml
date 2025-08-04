@@ -4,6 +4,7 @@ import QtQuick.Layouts 2.15
 import Album 1.0
 import Bars 1.0
 import Queue 1.0
+import Playlist 1.0
 
 Rectangle {
     Rectangle {
@@ -50,6 +51,10 @@ Rectangle {
 
             AlbumPage {
                 id: albumPage
+            }
+
+            PlaylistPage {
+                id: playlistPage
             }
         }
     }

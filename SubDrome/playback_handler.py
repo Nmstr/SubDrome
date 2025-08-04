@@ -17,6 +17,7 @@ class PlaybackHandler(QObject):
 
         self.current_album_id = ""
         self.current_song_id = ""
+        self.is_playing_playlist = False
 
         self.position_timer = QTimer(self)
         self.position_timer.setInterval(1000)
@@ -65,17 +66,22 @@ class PlaybackHandler(QObject):
         """
         if not self.current_album_id or not self.current_song_id:
             return
-        album_details = self.api_handler.get_album_details(self.current_album_id)
-        song_list = album_details.get("song", [])
+        if self.is_playing_playlist:
+            playlist_details = self.api_handler.get_playlist_details(self.current_album_id)
+            song_list = playlist_details.get("entry", [])
+        else:
+            album_details = self.api_handler.get_album_details(self.current_album_id)
+            song_list = album_details.get("song", [])
         if not song_list:
             return
+
         current_index = next((i for i, song in enumerate(song_list) if song.get("id") == self.current_song_id), -1)
         if current_index <= 0:
             self.audio_player.pause()
             self.isPlaying.emit(False)
             return
         previous_song = song_list[current_index - 1]
-        self.play_song(previous_song.get("albumId", ""), previous_song.get("id", ""))
+        self.play_song(self.current_album_id, previous_song.get("id", ""), self.is_playing_playlist)
 
     @Slot()
     def next_song(self) -> None:
@@ -85,20 +91,26 @@ class PlaybackHandler(QObject):
         """
         if not self.current_album_id or not self.current_song_id:
             return
-        album_details = self.api_handler.get_album_details(self.current_album_id)
-        song_list = album_details.get("song", [])
+        if self.is_playing_playlist:
+            playlist_details = self.api_handler.get_playlist_details(self.current_album_id)
+            song_list = playlist_details.get("entry", [])
+        else:
+            album_details = self.api_handler.get_album_details(self.current_album_id)
+            song_list = album_details.get("song", [])
         if not song_list:
                 return
+
         current_index = next((i for i, song in enumerate(song_list) if song.get("id") == self.current_song_id), -1)
         if current_index == -1 or current_index + 1 >= len(song_list):
             self.audio_player.stop()
             self.isPlaying.emit(False)
             return
         next_song = song_list[current_index + 1]
-        self.play_song(next_song.get("albumId", ""), next_song.get("id", ""))
+        self.play_song(self.current_album_id, next_song.get("id", ""), self.is_playing_playlist)
 
     @Slot(str, str)
-    def play_song(self, album_id: str, song_id: str) -> None:
+    @Slot(str, str, str)
+    def play_song(self, album_id: str, song_id: str, is_playlist = False) -> None:
         """
         Play a song by its ID.
         :param album_id: The ID of the album containing the song.
@@ -118,13 +130,19 @@ class PlaybackHandler(QObject):
 
         self.current_song_id = song_id
         self.current_album_id = album_id
+        self.is_playing_playlist = is_playlist
 
-        album_details = self.api_handler.get_album_details(album_id)
+        if is_playlist:
+            songs = self.api_handler.get_playlist_details(self.current_album_id).get("entry", [])
+        else:
+            songs = self.api_handler.get_album_details(album_id).get("song", [])
         add_songs = False
+        current_song_art_path = ""
         song_list = []
-        for song in album_details.get("song", []):
+        for song in songs:
             if not add_songs:  # Make sure to add songs only after the current song
                 if song.get("id") == song_id:
+                    current_song_art_path = self.api_handler.get_cover_art(song.get("coverArt", ""))
                     add_songs = True
                     continue
                 else:
@@ -135,7 +153,8 @@ class PlaybackHandler(QObject):
                 song.get("artist", ""),
                 art_path,
             ])
-        self.queueUpdated.emit(song_details.get("title", ""), song_details.get("artist", ""), art_path, song_list)
+        self.queueUpdated.emit(song_details.get("title", ""), song_details.get("artist", ""),
+                               current_song_art_path, song_list)
 
     @Slot()
     def pause(self) -> None:

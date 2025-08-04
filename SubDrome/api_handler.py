@@ -6,6 +6,8 @@ class ApiHandler(QObject):
     albumsUpdated = Signal("QVariant")
     coverReady = Signal(str, str)
     albumDetailsReceived = Signal(str, str, str, str, "QVariant")
+    playlistListChanged = Signal("QVariant")
+    playlistDetailsReceived = Signal(str, str, str, str, "QVariant")
 
     def __init__(self, config_handler):
         super().__init__()
@@ -214,3 +216,71 @@ class ApiHandler(QObject):
                 self.albumsUpdated.emit(albums)
         except requests.RequestException:
             pass
+
+    @Slot()
+    def update_playlist_list(self) -> None:
+        """
+        Fetch the list of playlists from the server.
+        """
+        params = {
+            "u": self.config_handler.username,
+            "t": self.config_handler.token,
+            "s": self.config_handler.salt,
+            "c": "SubDromeClient",
+            "v": "1.0",
+            "f": "json"
+        }
+        try:
+            response = requests.get(f"{self.config_handler.server_address}/rest/getPlaylists", params=params)
+            if response.status_code == 200 and response.json().get("subsonic-response", {}).get("status") == "ok":
+                playlists = []
+                for playlist in response.json().get("subsonic-response", {}).get("playlists", {}).get("playlist", []):
+                    cover_art_path = self.get_cover_art(playlist.get("coverArt", ""))
+                    playlists.append([
+                        playlist.get("id", ""),
+                        playlist.get("name", ""),
+                        cover_art_path
+                    ])
+                self.playlistListChanged.emit(playlists)
+        except requests.RequestException:
+            pass
+
+    @Slot(str)
+    def get_playlist_details(self, playlist_id: str) -> dict:
+        """
+        Fetch details of a specific playlist from the server.
+        :param playlist_id: The ID of the playlist to fetch details for.
+        """
+        params = {
+            "u": self.config_handler.username,
+            "t": self.config_handler.token,
+            "s": self.config_handler.salt,
+            "c": "SubDromeClient",
+            "v": "1.0",
+            "f": "json",
+            "id": playlist_id
+        }
+        try:
+            response = requests.get(f"{self.config_handler.server_address}/rest/getPlaylist", params=params)
+            if response.status_code == 200 and response.json().get("subsonic-response", {}).get("status") == "ok":
+                playlist_details = response.json().get("subsonic-response", {}).get("playlist", {})
+                song_list = []
+                for song in playlist_details.get("entry", []):
+                    song_list.append([
+                        song.get("id", ""),
+                        song.get("title", ""),
+                        song.get("artist", ""),
+                        song.get("duration", 0),
+                    ])
+                cover_art_path = self.get_cover_art(playlist_details.get("coverArt", ""))
+                self.playlistDetailsReceived.emit(
+                    playlist_details.get("id", ""),
+                    playlist_details.get("name"),
+                    playlist_details.get("owner", ""),
+                    cover_art_path,
+                    song_list
+                )
+                return response.json().get("subsonic-response", {}).get("playlist", {})
+        except requests.RequestException:
+            pass
+        return {}
