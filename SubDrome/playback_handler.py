@@ -132,12 +132,17 @@ class PlaybackHandler(QObject):
         self.current_album_id = album_id
         self.is_playing_playlist = is_playlist
 
-        album_details = self.api_handler.get_album_details(album_id)
+        if is_playlist:
+            songs = self.api_handler.get_playlist_details(self.current_album_id).get("entry", [])
+        else:
+            songs = self.api_handler.get_album_details(album_id).get("song", [])
         add_songs = False
+        current_song_art_path = ""
         song_list = []
-        for song in album_details.get("song", []):
+        for song in songs:
             if not add_songs:  # Make sure to add songs only after the current song
                 if song.get("id") == song_id:
+                    current_song_art_path = self.api_handler.get_cover_art(song.get("coverArt", ""))
                     add_songs = True
                     continue
                 else:
@@ -148,7 +153,8 @@ class PlaybackHandler(QObject):
                 song.get("artist", ""),
                 art_path,
             ])
-        self.queueUpdated.emit(song_details.get("title", ""), song_details.get("artist", ""), art_path, song_list)
+        self.queueUpdated.emit(song_details.get("title", ""), song_details.get("artist", ""),
+                               current_song_art_path, song_list)
 
     @Slot()
     def pause(self) -> None:
