@@ -7,6 +7,7 @@ class ApiHandler(QObject):
     coverReady = Signal(str, str)
     albumDetailsReceived = Signal(str, str, str, str, "QVariant")
     playlistListChanged = Signal("QVariant")
+    playlistDetailsReceived = Signal(str, str, str, str, "QVariant")
 
     def __init__(self, config_handler):
         super().__init__()
@@ -236,9 +237,48 @@ class ApiHandler(QObject):
                 for playlist in response.json().get("subsonic-response", {}).get("playlists", {}).get("playlist", []):
                     cover_art_path = self.get_cover_art(playlist.get("coverArt", ""))
                     playlists.append([
+                        playlist.get("id", ""),
                         playlist.get("name", ""),
                         cover_art_path
                     ])
                 self.playlistListChanged.emit(playlists)
+        except requests.RequestException:
+            pass
+
+    @Slot(str)
+    def get_playlist_details(self, playlist_id: str) -> None:
+        """
+        Fetch details of a specific playlist from the server.
+        :param playlist_id: The ID of the playlist to fetch details for.
+        """
+        params = {
+            "u": self.config_handler.username,
+            "t": self.config_handler.token,
+            "s": self.config_handler.salt,
+            "c": "SubDromeClient",
+            "v": "1.0",
+            "f": "json",
+            "id": playlist_id
+        }
+        try:
+            response = requests.get(f"{self.config_handler.server_address}/rest/getPlaylist", params=params)
+            if response.status_code == 200 and response.json().get("subsonic-response", {}).get("status") == "ok":
+                playlist_details = response.json().get("subsonic-response", {}).get("playlist", {})
+                song_list = []
+                for song in playlist_details.get("entry", []):
+                    song_list.append([
+                        song.get("id", ""),
+                        song.get("title", ""),
+                        song.get("artist", ""),
+                        song.get("duration", 0),
+                    ])
+                cover_art_path = self.get_cover_art(playlist_details.get("coverArt", ""))
+                self.playlistDetailsReceived.emit(
+                    playlist_details.get("id", ""),
+                    playlist_details.get("name"),
+                    playlist_details.get("owner", ""),
+                    cover_art_path,
+                    song_list
+                )
         except requests.RequestException:
             pass

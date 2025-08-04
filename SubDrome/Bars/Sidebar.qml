@@ -60,6 +60,10 @@ Rectangle {
                 visible: sidebar.playlistsExpanded
                 iconSource: model.cover
                 label: model.name
+                onClicked: {
+                    contentStack.currentIndex = 2;
+                    apiHandler.get_playlist_details(model.id);
+                }
             }
 
             Component.onCompleted: {
@@ -78,8 +82,9 @@ Rectangle {
             for (let i = 0; i < playlists.length; i++) {
                 let playlist = playlists[i];
                 playlistsListModel.append({
-                    name: playlist[0],
-                    cover: playlist[1] || "qrc:/icons/playlist.svg",
+                    id: playlist[0],
+                    name: playlist[1],
+                    cover: playlist[2] || "qrc:/icons/playlist.svg",
                 });
             }
         }
