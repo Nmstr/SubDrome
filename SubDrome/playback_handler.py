@@ -12,7 +12,7 @@ class PlaybackHandler(QObject):
         self.api_handler = api_handler
         self.config_handler = config_handler
         self.audio_player = PySoundSphere.AudioPlayer("pygame")
-        self.audio_player.set_callback_function(self.next_song)
+        self.audio_player.set_callback_function(lambda: self.skip_song(1))
         self.audio_player.volume = self.config_handler.volume
 
         self.current_album_id = ""
@@ -58,11 +58,12 @@ class PlaybackHandler(QObject):
         self.audio_player.position = position
         self.positionChanged.emit(position)
 
-    @Slot()
-    def previous_song(self) -> None:
+    @Slot(int)
+    def skip_song(self, amount: int) -> None:
         """
-        Play the previous song in the queue.
-        If no previous song is available, it will stop playback.
+        Skip around in the queue.
+        If the song is not available, playback will stop.
+        :param amount: The number of songs to skip (-1 = previous song, 1 = next song).
         """
         if not self.current_album_id or not self.current_song_id:
             return
@@ -76,36 +77,11 @@ class PlaybackHandler(QObject):
             return
 
         current_index = next((i for i, song in enumerate(song_list) if song.get("id") == self.current_song_id), -1)
-        if current_index <= 0:
+        if (current_index == -1) or (current_index + amount >= len(song_list)) or (current_index + amount < 0):
             self.audio_player.pause()
             self.isPlaying.emit(False)
             return
-        previous_song = song_list[current_index - 1]
-        self.play_song(self.current_album_id, previous_song.get("id", ""), self.is_playing_playlist)
-
-    @Slot()
-    def next_song(self) -> None:
-        """
-        Play the next song in the queue.
-        If no next song is available, it will stop playback.
-        """
-        if not self.current_album_id or not self.current_song_id:
-            return
-        if self.is_playing_playlist:
-            playlist_details = self.api_handler.get_playlist_details(self.current_album_id)
-            song_list = playlist_details.get("entry", [])
-        else:
-            album_details = self.api_handler.get_album_details(self.current_album_id)
-            song_list = album_details.get("song", [])
-        if not song_list:
-                return
-
-        current_index = next((i for i, song in enumerate(song_list) if song.get("id") == self.current_song_id), -1)
-        if current_index == -1 or current_index + 1 >= len(song_list):
-            self.audio_player.stop()
-            self.isPlaying.emit(False)
-            return
-        next_song = song_list[current_index + 1]
+        next_song = song_list[current_index + amount]
         self.play_song(self.current_album_id, next_song.get("id", ""), self.is_playing_playlist)
 
     @Slot(str, str)
