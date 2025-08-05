@@ -157,6 +157,30 @@ Rectangle {
         }
 
         Image {
+            id: showQueueIcon
+            source: "qrc:/icons/queue.svg"
+            sourceSize: Qt.size(32, 32)
+            Image {
+                source: parent.source
+                width: 0
+                height: 0
+            }
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    if (queueDisplay.visible) {
+                        queueDisplay.visible = false;
+                        queueDisplay.width = 0;
+                    } else {
+                        queueDisplay.visible = true;
+                        queueDisplay.width = 350;
+                    }
+                }
+            }
+        }
+
+        Image {
             id: volumeIcon
             source: "qrc:/icons/volume.svg"
             sourceSize: Qt.size(32, 32)

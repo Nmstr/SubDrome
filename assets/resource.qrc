@@ -53,4 +53,7 @@
     <qresource prefix="/icons">
         <file alias="volume.svg">icons/material/volume-high.svg</file>
     </qresource>
+    <qresource prefix="/icons">
+        <file alias="queue.svg">icons/material/queue-first-in-last-out.svg</file>
+    </qresource>
 </RCC>

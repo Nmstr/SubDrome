@@ -16,6 +16,7 @@ The following icons are modified versions of the original icons:
 - `play.svg` - changed color
 - `playlist-music-outline.svg` - changed color
 - `plus.svg` - changed color
+- `queue-first-in-last-out.svg` - changed color
 - `repeat-variant.svg` - changed color
 - `shuffle-variant.svg` - changed color
 - `skip-next.svg` - changed color
