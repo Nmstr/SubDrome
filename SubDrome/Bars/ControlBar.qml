@@ -165,6 +165,19 @@ Rectangle {
                 width: 0
                 height: 0
             }
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    if (queueDisplay.visible) {
+                        queueDisplay.visible = false;
+                        queueDisplay.width = 0;
+                    } else {
+                        queueDisplay.visible = true;
+                        queueDisplay.width = 350;
+                    }
+                }
+            }
         }
 
         Image {
