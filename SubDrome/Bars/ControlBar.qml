@@ -157,6 +157,17 @@ Rectangle {
         }
 
         Image {
+            id: showQueueIcon
+            source: "qrc:/icons/queue.svg"
+            sourceSize: Qt.size(32, 32)
+            Image {
+                source: parent.source
+                width: 0
+                height: 0
+            }
+        }
+
+        Image {
             id: volumeIcon
             source: "qrc:/icons/volume.svg"
             sourceSize: Qt.size(32, 32)
