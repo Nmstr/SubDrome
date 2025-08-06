@@ -104,7 +104,7 @@ Rectangle {
                 onClicked: loginButtonAction.trigger();
 
                 Shortcut {
-                    sequence: "Return"
+                    sequences: ["Return", "Enter"]
                     onActivated: loginButtonAction.trigger();
                 }
 
