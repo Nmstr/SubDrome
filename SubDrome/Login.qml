@@ -101,8 +101,18 @@ Rectangle {
                     }
                 }
 
-                onClicked: {
-                    loginHandler.handle_login(urlField.text, usernameField.text, passwordField.text);
+                onClicked: loginButtonAction.trigger();
+
+                Shortcut {
+                    sequence: "Return"
+                    onActivated: loginButtonAction.trigger();
+                }
+
+                Action {
+                    id: loginButtonAction
+                    onTriggered: {
+                        loginHandler.handle_login(urlField.text, usernameField.text, passwordField.text);
+                    }
                 }
             }
 
