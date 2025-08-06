@@ -123,6 +123,10 @@ Rectangle {
                 text: ""
             }
         }
+
+        Component.onCompleted: {
+            loginHandler.request_login_fill()
+        }
     }
 
     Connections {
@@ -131,6 +135,12 @@ Rectangle {
         function onLoginFailed(msg) {
             errorLabel.text = msg;
             errorLabel.visible = true;
+        }
+
+        function onLoginFilled(url, username) {
+            urlField.text = url;
+            usernameField.text = username;
+            passwordField.focus = true;
         }
     }
 }

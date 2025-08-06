@@ -8,6 +8,7 @@ class LoginHandler(QObject):
     loginFailed = Signal(str)
     loginSuccess = Signal()
     loggedOut = Signal()
+    loginFilled = Signal(str, str)
 
     def __init__(self, config_handler):
         super().__init__()
@@ -85,12 +86,18 @@ class LoginHandler(QObject):
         return True
 
     @Slot()
+    def request_login_fill(self) -> None:
+        """
+        Tries to automatically fill in the login fields with server address and username.
+        This method exists since there is no way to access the config handler directly from QML.
+        """
+        self.loginFilled.emit(self.config_handler.server_address, self.config_handler.username)
+
+    @Slot()
     def logout(self):
         """
         Handle the logout process by clearing the saved credentials.
         """
         del self.config_handler.token
         del self.config_handler.salt
-        self.config_handler.server_address = ""
-        self.config_handler.username = ""
         self.loggedOut.emit()
