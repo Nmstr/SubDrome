@@ -46,6 +46,28 @@ Rectangle {
             color: "lightgray"
         }
 
+        Text {
+            id: songCountAndDuration
+            anchors {
+                left: coverImage.right
+                top: ownerName.bottom
+                margins: 20
+            }
+            font.pixelSize: 16
+            color: "white"
+        }
+
+        Text {
+            id: isPublic
+            anchors {
+                left: coverImage.right
+                top: songCountAndDuration.bottom
+                margins: 20
+            }
+            font.pixelSize: 14
+            color: "lightgray"
+        }
+
         ListView {
             id: songListView
             clip: true
@@ -92,11 +114,13 @@ Rectangle {
     Connections {
         target: apiHandler
 
-        function onPlaylistDetailsReceived(id, name, owner, cover_path, songs) {
+        function onPlaylistDetailsReceived(id, name, owner, cover_path, song_count, duration, is_public, songs) {
             playlistPage.playlistId = id;
             coverImage.source = cover_path;
             playlistTitle.text = name;
             ownerName.text = owner;
+            songCountAndDuration.text = song_count + " songs, " + duration + " seconds";
+            isPublic.text = is_public ? "Public" : "Private";
             songListModel.clear();
             for (var i = 0; i < songs.length; i++) {
                 var song = songs[i];

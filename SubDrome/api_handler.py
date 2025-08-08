@@ -7,7 +7,7 @@ class ApiHandler(QObject):
     coverReady = Signal(str, str)
     albumDetailsReceived = Signal(str, str, str, str, "QVariant")
     playlistListChanged = Signal("QVariant")
-    playlistDetailsReceived = Signal(str, str, str, str, "QVariant")
+    playlistDetailsReceived = Signal(str, str, str, str, int, int, bool, "QVariant")
 
     def __init__(self, config_handler):
         super().__init__()
@@ -251,6 +251,9 @@ class ApiHandler(QObject):
                 playlist_details.get("name"),
                 playlist_details.get("owner", ""),
                 cover_art_path,
+                playlist_details.get("songCount", 0),
+                playlist_details.get("duration", 0),
+                playlist_details.get("public", False),
                 song_list
             )
             return playlist_details
