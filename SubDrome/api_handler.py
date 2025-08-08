@@ -6,7 +6,7 @@ import os
 class ApiHandler(QObject):
     albumsUpdated = Signal("QVariant")
     coverReady = Signal(str, str)
-    albumDetailsReceived = Signal(str, str, str, str, "QVariant")
+    albumDetailsReceived = Signal(str, str, str, str, int, str, "QVariant")
     playlistListChanged = Signal("QVariant")
     playlistDetailsReceived = Signal(str, str, str, str, int, str, bool, "QVariant")
 
@@ -119,26 +119,27 @@ class ApiHandler(QObject):
         }
         response = self._send_request("getAlbum", extra_params)
         if response.get("status") == "ok":
-           album_details = response.get("album", {})
+            album_details = response.get("album", {})
 
-           song_list = []
-           for song in album_details.get("song", []):
-               song_list.append([
-                   song.get("id", ""),
-                   song.get("title", ""),
-                   song.get("artist", ""),
-                   song.get("duration", 0),
-               ])
-
-           cover_art_path = self.get_cover_art(album_details.get("coverArt", ""))
-           self.albumDetailsReceived.emit(
-               album_details.get("id", ""),
-               album_details.get("name"),
-               album_details.get("artist"),
-               cover_art_path,
-               song_list
-           )
-           return album_details
+            song_list = []
+            for song in album_details.get("song", []):
+                song_list.append([
+                    song.get("id", ""),
+                    song.get("title", ""),
+                    song.get("artist", ""),
+                    song.get("duration", 0),
+                ])
+            cover_art_path = self.get_cover_art(album_details.get("coverArt", ""))
+            self.albumDetailsReceived.emit(
+                album_details.get("id", ""),
+                album_details.get("name"),
+                album_details.get("artist"),
+                cover_art_path,
+                album_details.get("songCount", 0),
+                time.strftime("%H:%M:%S", time.gmtime(album_details.get("duration", 0))),
+                song_list
+            )
+            return album_details
         return {}
 
     def get_song_details(self, song_id: str) -> dict:
