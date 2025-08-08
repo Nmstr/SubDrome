@@ -46,6 +46,17 @@ Rectangle {
             color: "lightgray"
         }
 
+        Text {
+            id: songCountAndDuration
+            anchors {
+                left: coverImage.right
+                top: artistName.bottom
+                margins: 20
+            }
+            font.pixelSize: 16
+            color: "white"
+        }
+
         ListView {
             id: songListView
             clip: true
@@ -92,11 +103,12 @@ Rectangle {
     Connections {
         target: apiHandler
 
-        function onAlbumDetailsReceived(id, name, artist, cover_path, songs) {
+        function onAlbumDetailsReceived(id, name, artist, cover_path, song_count, duration, songs) {
             albumPage.albumId = id;
             coverImage.source = cover_path;
             albumTitle.text = name;
             artistName.text = artist;
+            songCountAndDuration.text = song_count + " Songs · " + duration;
             songListModel.clear();
             for (var i = 0; i < songs.length; i++) {
                 var song = songs[i];
