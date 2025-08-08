@@ -119,7 +119,7 @@ Rectangle {
             coverImage.source = cover_path;
             playlistTitle.text = name;
             ownerName.text = owner;
-            songCountAndDuration.text = song_count + " songs, " + duration + " seconds";
+            songCountAndDuration.text = song_count + " Songs · " + duration;
             isPublic.text = is_public ? "Public" : "Private";
             songListModel.clear();
             for (var i = 0; i < songs.length; i++) {

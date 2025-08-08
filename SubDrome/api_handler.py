@@ -1,5 +1,6 @@
 from PySide6.QtCore import QObject, Slot, Signal, QThreadPool
 import requests
+import time
 import os
 
 class ApiHandler(QObject):
@@ -7,7 +8,7 @@ class ApiHandler(QObject):
     coverReady = Signal(str, str)
     albumDetailsReceived = Signal(str, str, str, str, "QVariant")
     playlistListChanged = Signal("QVariant")
-    playlistDetailsReceived = Signal(str, str, str, str, int, int, bool, "QVariant")
+    playlistDetailsReceived = Signal(str, str, str, str, int, str, bool, "QVariant")
 
     def __init__(self, config_handler):
         super().__init__()
@@ -252,7 +253,7 @@ class ApiHandler(QObject):
                 playlist_details.get("owner", ""),
                 cover_art_path,
                 playlist_details.get("songCount", 0),
-                playlist_details.get("duration", 0),
+                time.strftime("%H:%M:%S", time.gmtime(playlist_details.get("duration", 0))),
                 playlist_details.get("public", False),
                 song_list
             )
