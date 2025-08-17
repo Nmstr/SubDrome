@@ -191,6 +191,27 @@ class ApiHandler(QObject):
             pass
         return ""
 
+    def _general_search(self, query: str, page: int) -> dict:
+        """
+        Perform a general search on the Subsonic server.
+        :param query: The search query.
+        :param page: The page number.
+        :return: A dictionary containing search results or an empty dictionary if the request fails.
+        """
+        extra_params = {
+            "query": query,
+            "artistCount": 20,
+            "artistOffset": page * 20 - 20,
+            "albumCount": 20,
+            "albumOffset": page * 20 - 20,
+            "songCount": 20,
+            "songOffset": page * 20 - 20
+        }
+        response = self._send_request("search3", extra_params)
+        if response.get("status") == "ok":
+            return response.get("searchResult3", {})
+        return {}
+
     @Slot(str, int)
     def search_albums(self, query: str, page: int) -> None:
         """
@@ -198,15 +219,11 @@ class ApiHandler(QObject):
         :param query: The search query.
         :param page: The page number.
         """
-        extra_params = {
-            "query": query,
-            "albumCount": 20,
-            "albumOffset": page * 20 - 20
-        }
-        response = self._send_request("search2", extra_params)
-        if response.get("status") == "ok":
+        search_result = self._general_search(query, page)
+        response_albums = search_result.get("album", [])
+        if response_albums:
             albums = []
-            for album in response.get("searchResult2", {}).get("album", []):
+            for album in response_albums:
                 cover_id = album.get("coverArt", "")
                 album_id = album.get("id", "")
                 self.thread_manager.start(lambda cid=cover_id, aid=album_id: self.get_cover_art(cid, aid))
@@ -217,6 +234,28 @@ class ApiHandler(QObject):
                     f"{os.getcwd()}/assets/icons/material/album.svg"
                 ])
             self.albumsUpdated.emit(albums)
+
+    @Slot(str, int, result="QVariant")
+    def search_artists(self, query: str, page: int) -> list:
+        """
+        Search for artists
+        :param query: The search query.
+        :param page: The page number.
+        :return: A list of artists matching the search query.
+        """
+        search_result = self._general_search(query, page)
+        response_artists = search_result.get("artist", [])
+        if response_artists:
+            artists = []
+            for artist in response_artists:
+                artist_id = artist.get("id", "")
+                artists.append([
+                    artist_id,
+                    artist.get("name"),
+                    artist.get("albumCount")
+                ])
+            return artists
+        return [[]]
 
     @Slot()
     def update_playlist_list(self) -> None:
@@ -301,3 +340,22 @@ class ApiHandler(QObject):
             "rating": rating
         }
         self._send_request("setRating", extra_params)
+
+    @Slot(result="QVariant")
+    def get_artists(self) -> list:
+        """
+        Fetch the list of artists from the server.
+        :return: A list of artists with their ID, name, and album count.
+        """
+        response = self._send_request("getArtists")
+        if response.get("status") == "ok":
+            artists = []
+            for indices in response.get("artists", {}).get("index", []):
+                for artist in indices.get("artist", []):
+                    artists.append([
+                        artist.get("id", ""),
+                        artist.get("name", ""),
+                        artist.get("albumCount", 0)
+                    ])
+            return artists
+        return [[]]
