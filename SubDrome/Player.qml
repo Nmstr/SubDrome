@@ -5,6 +5,7 @@ import Album 1.0
 import Bars 1.0
 import Queue 1.0
 import Playlist 1.0
+import Artist 1.0
 
 Rectangle {
     Rectangle {
@@ -55,6 +56,10 @@ Rectangle {
 
             PlaylistPage {
                 id: playlistPage
+            }
+
+            ArtistDisplay {
+                id: artistDisplay
             }
         }
     }
