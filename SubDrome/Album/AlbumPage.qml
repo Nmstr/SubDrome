@@ -47,6 +47,19 @@ Rectangle {
             width: 24
             height: 24
             source: "qrc:/icons/no_favourite.svg"
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if (favouriteIcon.source.toString() === "qrc:/icons/no_favourite.svg") {
+                        favouriteIcon.source = "qrc:/icons/favourite.svg";
+                        apiHandler.set_favourite_status(albumPage.albumId, true);
+                    } else {
+                        favouriteIcon.source = "qrc:/icons/no_favourite.svg";
+                        apiHandler.set_favourite_status(albumPage.albumId, false);
+                    }
+                }
+            }
         }
 
         Text {

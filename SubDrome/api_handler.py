@@ -260,3 +260,23 @@ class ApiHandler(QObject):
             )
             return playlist_details
         return {}
+
+    @Slot(str, bool)
+    def set_favourite_status(self, id: str, status: bool) -> None:
+        """
+        Set the favourite status of an album, song or artist.
+        :param id: The ID of the album, song or artist.
+        :param status: True to favourite, False to unfavourite.
+        """
+        extra_params = {
+            "id": id,
+        }
+        # favourites are stars on the Subsonic server
+        # Here we use a heart (favourite) because stars are used for ratings
+        if status:
+            endpoint = "star"
+        else:
+            endpoint = "unstar"
+        response = self._send_request(endpoint, extra_params)
+        if response.get("status") == "ok":
+            self.get_albums("favourite")
