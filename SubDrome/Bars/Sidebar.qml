@@ -30,7 +30,7 @@ Rectangle {
             onClicked: { albumDisplay.loadAlbums("starred", 1) } }
         SidebarItem { visible: sidebar.albumsExpanded; x: 24;
             iconSource: "qrc:/icons/star_full.svg"; label: "Top Rated";
-            onClicked: { } }
+            onClicked: { albumDisplay.loadAlbums("highest", 1) } }
         SidebarItem { visible: sidebar.albumsExpanded; x: 24;
             iconSource: "qrc:/icons/plus.svg"; label: "Recently Added";
             onClicked: { albumDisplay.loadAlbums("newest", 1) } }
