@@ -21,25 +21,25 @@ Rectangle {
 
         SidebarItem { visible: sidebar.albumsExpanded; x: 24;
             iconSource: "qrc:/icons/album.svg"; label: "All";
-            onClicked: { contentStack.currentIndex = 0; apiHandler.get_albums("alphabeticalByName") } }
+            onClicked: { albumDisplay.loadAlbums("alphabeticalByName", 1) } }
         SidebarItem { visible: sidebar.albumsExpanded; x: 24;
             iconSource: "qrc:/icons/shuffle.svg"; label: "Random";
-            onClicked: { contentStack.currentIndex = 0; apiHandler.get_albums("random") } }
+            onClicked: { albumDisplay.loadAlbums("random", 1) } }
         SidebarItem { visible: sidebar.albumsExpanded; x: 24;
             iconSource: "qrc:/icons/favourite.svg"; label: "Favourites";
-            onClicked: { contentStack.currentIndex = 0; apiHandler.get_albums("starred") } }
+            onClicked: { albumDisplay.loadAlbums("starred", 1) } }
         SidebarItem { visible: sidebar.albumsExpanded; x: 24;
             iconSource: "qrc:/icons/star_full.svg"; label: "Top Rated";
             onClicked: { } }
         SidebarItem { visible: sidebar.albumsExpanded; x: 24;
             iconSource: "qrc:/icons/plus.svg"; label: "Recently Added";
-            onClicked: { contentStack.currentIndex = 0; apiHandler.get_albums("newest") } }
+            onClicked: { albumDisplay.loadAlbums("newest", 1) } }
         SidebarItem { visible: sidebar.albumsExpanded; x: 24;
             iconSource: "qrc:/icons/history.svg"; label: "Recently Played";
-            onClicked: { contentStack.currentIndex = 0; apiHandler.get_albums("recent") } }
+            onClicked: { albumDisplay.loadAlbums("recent", 1) } }
         SidebarItem { visible: sidebar.albumsExpanded; x: 24;
             iconSource: "qrc:/icons/repeat.svg"; label: "Most Played";
-            onClicked: { contentStack.currentIndex = 0; apiHandler.get_albums("frequent") } }
+            onClicked: { albumDisplay.loadAlbums("frequent", 1) } }
 
         SidebarItem { iconSource: "qrc:/icons/artist.svg"; label: "Artists";
             onClicked: { } }

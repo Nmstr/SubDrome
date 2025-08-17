@@ -27,4 +27,41 @@ Rectangle {
             apiHandler.search_albums(text);
         }
     }
+
+    Row {
+        anchors {
+            right: parent.right
+            top: parent.top
+            rightMargin: 20
+            topMargin: 20
+        }
+        spacing: 10
+
+        Text {
+            text: "Page: "
+            color: "white"
+            font.pixelSize: 16
+            anchors.verticalCenter: parent.verticalCenter
+        }
+        SpinBox {
+            id: pageSpinBox
+            width: 60
+            from: 1
+            stepSize: 1
+            contentItem: Text {
+                text: parent.textFromValue(parent.value)
+                color: "white"
+                font.pixelSize: 16
+                horizontalAlignment: TextInput.AlignHCenter
+            }
+            background: Rectangle {
+                color: "#424242"
+                radius: 5
+                border.color: "#888"
+            }
+            onValueChanged: {
+                apiHandler.get_albums(albumDisplay.currentAlbumType, value);
+            }
+        }
+    }
 }

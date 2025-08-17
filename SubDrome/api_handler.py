@@ -82,15 +82,18 @@ class ApiHandler(QObject):
             pass
         return ""
 
-    @Slot(str)
-    def get_albums(self, album_type: str) -> None:
+    @Slot(str, int)
+    def get_albums(self, album_type: str, page: int) -> None:
         """
         Fetch random albums from the server.
+        :param album_type: The type of albums to fetch (e.g., "random", "favourite").
+        :param page: The page number.
         :return: A list of random albums or an empty list if the request fails.
         """
         extra_params = {
             "type": album_type,
-            "size": 20
+            "size": 20,
+            "offset": page * 20 - 20
         }
         response = self._send_request("getAlbumList2", extra_params)
         if response.get("status") == "ok":

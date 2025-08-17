@@ -4,6 +4,13 @@ import QtQuick.Controls 2.15
 Rectangle {
     id: albumDisplay
     color: "transparent"
+    property string currentAlbumType: "alphabeticalByName"
+
+    function loadAlbums(type, page) {
+        contentStack.currentIndex = 0;
+        currentAlbumType = type;
+        apiHandler.get_albums(type, page);
+    }
 
     AlbumDisplayTopper {
         id: topper
