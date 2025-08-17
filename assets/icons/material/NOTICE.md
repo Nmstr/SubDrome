@@ -10,6 +10,7 @@ The following icons are modified versions of the original icons:
 - `cog.svg` - changed color
 - `download.svg` - changed color
 - `heart.svg` - changed color
+- `heart-outline.svg` - changed color
 - `history.svg` - changed color
 - `music-note.svg` - changed color
 - `pause.svg` - changed color
@@ -22,4 +23,5 @@ The following icons are modified versions of the original icons:
 - `skip-next.svg` - changed color
 - `skip-previous.svg` - changed color
 - `star.svg` - changed color
+- `star-outline.svg` - changed color
 - `volume-high.svg` - changed color

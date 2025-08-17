@@ -35,6 +35,33 @@ Rectangle {
             color: "white"
         }
 
+        Image {
+            id: favouriteIcon
+            anchors {
+                left: albumTitle.right
+                top: parent.top
+                margins: 20
+                topMargin: 25
+            }
+            fillMode: Image.PreserveAspectFit
+            width: 24
+            height: 24
+            source: "qrc:/icons/no_favourite.svg"
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if (favouriteIcon.source.toString() === "qrc:/icons/no_favourite.svg") {
+                        favouriteIcon.source = "qrc:/icons/favourite.svg";
+                        apiHandler.set_favourite_status(albumPage.albumId, true);
+                    } else {
+                        favouriteIcon.source = "qrc:/icons/no_favourite.svg";
+                        apiHandler.set_favourite_status(albumPage.albumId, false);
+                    }
+                }
+            }
+        }
+
         Text {
             id: artistName
             anchors {
@@ -103,12 +130,13 @@ Rectangle {
     Connections {
         target: apiHandler
 
-        function onAlbumDetailsReceived(id, name, artist, cover_path, song_count, duration, songs) {
+        function onAlbumDetailsReceived(id, name, artist, cover_path, song_count, duration, is_favourite, songs) {
             albumPage.albumId = id;
             coverImage.source = cover_path;
             albumTitle.text = name;
             artistName.text = artist;
             songCountAndDuration.text = song_count + " Songs · " + duration;
+            favouriteIcon.source = is_favourite ? "qrc:/icons/favourite.svg" : "qrc:/icons/no_favourite.svg";
             songListModel.clear();
             for (var i = 0; i < songs.length; i++) {
                 var song = songs[i];

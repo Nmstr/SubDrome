@@ -6,7 +6,7 @@ import os
 class ApiHandler(QObject):
     albumsUpdated = Signal("QVariant")
     coverReady = Signal(str, str)
-    albumDetailsReceived = Signal(str, str, str, str, int, str, "QVariant")
+    albumDetailsReceived = Signal(str, str, str, str, int, str, bool, "QVariant")
     playlistListChanged = Signal("QVariant")
     playlistDetailsReceived = Signal(str, str, str, str, int, str, bool, "QVariant")
 
@@ -137,6 +137,7 @@ class ApiHandler(QObject):
                 cover_art_path,
                 album_details.get("songCount", 0),
                 time.strftime("%H:%M:%S", time.gmtime(album_details.get("duration", 0))),
+                True if album_details.get("starred", False) else False,
                 song_list
             )
             return album_details
@@ -260,3 +261,23 @@ class ApiHandler(QObject):
             )
             return playlist_details
         return {}
+
+    @Slot(str, bool)
+    def set_favourite_status(self, id: str, status: bool) -> None:
+        """
+        Set the favourite status of an album, song or artist.
+        :param id: The ID of the album, song or artist.
+        :param status: True to favourite, False to unfavourite.
+        """
+        extra_params = {
+            "id": id,
+        }
+        # favourites are stars on the Subsonic server
+        # Here we use a heart (favourite) because stars are used for ratings
+        if status:
+            endpoint = "star"
+        else:
+            endpoint = "unstar"
+        response = self._send_request(endpoint, extra_params)
+        if response.get("status") == "ok":
+            self.get_albums("favourite")

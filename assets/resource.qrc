@@ -12,7 +12,13 @@
         <file alias="favourite.svg">icons/material/heart.svg</file>
     </qresource>
     <qresource prefix="/icons">
+        <file alias="no_favourite.svg">icons/material/heart-outline.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
         <file alias="star_full.svg">icons/material/star.svg</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="star_empty.svg">icons/material/star-outline.svg</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="history.svg">icons/material/history.svg</file>
