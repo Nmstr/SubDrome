@@ -284,6 +284,19 @@ class ApiHandler(QObject):
             endpoint = "star"
         else:
             endpoint = "unstar"
-        response = self._send_request(endpoint, extra_params)
-        if response.get("status") == "ok":
-            self.get_albums("favourite")
+        self._send_request(endpoint, extra_params)
+
+    @Slot(str, int)
+    def set_rating(self, target_id: str, rating: int) -> None:
+        """
+        Set the rating of an album, song or artist.
+        :param target_id: The ID of the album, song or artist.
+        :param rating: The rating to set (0-5; 0 removes the rating).
+        """
+        if rating < 0 or rating > 5:
+            return
+        extra_params = {
+            "id": target_id,
+            "rating": rating
+        }
+        self._send_request("setRating", extra_params)

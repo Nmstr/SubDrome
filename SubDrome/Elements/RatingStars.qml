@@ -21,7 +21,7 @@ Row {
                     } else {
                         ratingStars.currentRating = index + 1;
                     }
-                    //apiHandler.set_rating(ratingStars.targetId, ratingStars.currentRating);
+                    apiHandler.set_rating(ratingStars.targetId, ratingStars.currentRating);
                 }
             }
         }
