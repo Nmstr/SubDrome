@@ -190,14 +190,17 @@ class ApiHandler(QObject):
             pass
         return ""
 
-    @Slot(str)
-    def search_albums(self, query: str) -> None:
+    @Slot(str, int)
+    def search_albums(self, query: str, page: int) -> None:
         """
         Search for albums
         :param query: The search query.
+        :param page: The page number.
         """
         extra_params = {
-            "query": query
+            "query": query,
+            "albumCount": 20,
+            "albumOffset": page * 20 - 20
         }
         response = self._send_request("search2", extra_params)
         if response.get("status") == "ok":

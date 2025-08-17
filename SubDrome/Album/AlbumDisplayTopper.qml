@@ -24,7 +24,7 @@ Rectangle {
             border.color: "#888"
         }
         onTextChanged: {
-            apiHandler.search_albums(text);
+            apiHandler.search_albums(text, 1);
         }
     }
 
@@ -60,7 +60,11 @@ Rectangle {
                 border.color: "#888"
             }
             onValueChanged: {
-                apiHandler.get_albums(albumDisplay.currentAlbumType, value);
+                if (searchField.text == "") {
+                    apiHandler.get_albums(albumDisplay.currentAlbumType, value);
+                } else {
+                    apiHandler.search_albums(searchField.text, value);
+                }
             }
         }
     }
