@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import Elements 1.0
 
 Rectangle {
     id: albumPage
@@ -82,6 +83,17 @@ Rectangle {
             }
             font.pixelSize: 16
             color: "white"
+        }
+
+        RatingStars {
+            id: ratingStars
+            anchors {
+                left: coverImage.right
+                top: songCountAndDuration.bottom
+                margins: 20
+            }
+            currentRating: 0
+            targetId: albumPage.albumId
         }
 
         ListView {
