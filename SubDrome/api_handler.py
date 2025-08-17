@@ -6,7 +6,7 @@ import os
 class ApiHandler(QObject):
     albumsUpdated = Signal("QVariant")
     coverReady = Signal(str, str)
-    albumDetailsReceived = Signal(str, str, str, str, int, str, bool, "QVariant")
+    albumDetailsReceived = Signal(str, str, str, str, int, str, bool, int, "QVariant")
     playlistListChanged = Signal("QVariant")
     playlistDetailsReceived = Signal(str, str, str, str, int, str, bool, "QVariant")
 
@@ -141,6 +141,7 @@ class ApiHandler(QObject):
                 album_details.get("songCount", 0),
                 time.strftime("%H:%M:%S", time.gmtime(album_details.get("duration", 0))),
                 True if album_details.get("starred", False) else False,
+                album_details.get("userRating", 0),
                 song_list
             )
             return album_details
@@ -284,6 +285,19 @@ class ApiHandler(QObject):
             endpoint = "star"
         else:
             endpoint = "unstar"
-        response = self._send_request(endpoint, extra_params)
-        if response.get("status") == "ok":
-            self.get_albums("favourite")
+        self._send_request(endpoint, extra_params)
+
+    @Slot(str, int)
+    def set_rating(self, target_id: str, rating: int) -> None:
+        """
+        Set the rating of an album, song or artist.
+        :param target_id: The ID of the album, song or artist.
+        :param rating: The rating to set (0-5; 0 removes the rating).
+        """
+        if rating < 0 or rating > 5:
+            return
+        extra_params = {
+            "id": target_id,
+            "rating": rating
+        }
+        self._send_request("setRating", extra_params)

@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import Elements 1.0
 
 Rectangle {
     id: albumPage
@@ -84,6 +85,17 @@ Rectangle {
             color: "white"
         }
 
+        RatingStars {
+            id: ratingStars
+            anchors {
+                left: coverImage.right
+                top: songCountAndDuration.bottom
+                margins: 20
+            }
+            currentRating: 0
+            targetId: albumPage.albumId
+        }
+
         ListView {
             id: songListView
             clip: true
@@ -130,13 +142,14 @@ Rectangle {
     Connections {
         target: apiHandler
 
-        function onAlbumDetailsReceived(id, name, artist, cover_path, song_count, duration, is_favourite, songs) {
+        function onAlbumDetailsReceived(id, name, artist, cover_path, song_count, duration, is_favourite, user_rating, songs) {
             albumPage.albumId = id;
             coverImage.source = cover_path;
             albumTitle.text = name;
             artistName.text = artist;
             songCountAndDuration.text = song_count + " Songs · " + duration;
             favouriteIcon.source = is_favourite ? "qrc:/icons/favourite.svg" : "qrc:/icons/no_favourite.svg";
+            ratingStars.currentRating = user_rating;
             songListModel.clear();
             for (var i = 0; i < songs.length; i++) {
                 var song = songs[i];
