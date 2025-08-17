@@ -35,6 +35,20 @@ Rectangle {
             color: "white"
         }
 
+        Image {
+            id: favouriteIcon
+            anchors {
+                left: albumTitle.right
+                top: parent.top
+                margins: 20
+                topMargin: 25
+            }
+            fillMode: Image.PreserveAspectFit
+            width: 24
+            height: 24
+            source: "qrc:/icons/no_favourite.svg"
+        }
+
         Text {
             id: artistName
             anchors {
