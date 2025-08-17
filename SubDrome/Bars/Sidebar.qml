@@ -42,7 +42,7 @@ Rectangle {
             onClicked: { albumDisplay.loadAlbums("frequent", 1) } }
 
         SidebarItem { iconSource: "qrc:/icons/artist.svg"; label: "Artists";
-            onClicked: { contentStack.currentIndex = 3 } }
+            onClicked: { artistDisplay.loadArtists() } }
         SidebarItem { iconSource: "qrc:/icons/song.svg"; label: "Songs";
             onClicked: { } }
         SidebarItem { iconSource: "qrc:/icons/playlist.svg"; label: "Playlists";

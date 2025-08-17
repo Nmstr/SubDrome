@@ -301,3 +301,18 @@ class ApiHandler(QObject):
             "rating": rating
         }
         self._send_request("setRating", extra_params)
+
+    @Slot(result="QVariant")
+    def get_artists(self):
+        response = self._send_request("getArtists")
+        if response.get("status") == "ok":
+            artists = []
+            for indices in response.get("artists", {}).get("index", []):
+                for artist in indices.get("artist", []):
+                    artists.append([
+                        artist.get("id", ""),
+                        artist.get("name", ""),
+                        artist.get("albumCount", 0)
+                    ])
+            return artists
+        return [[]]
