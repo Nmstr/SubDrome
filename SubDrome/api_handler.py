@@ -6,7 +6,7 @@ import os
 class ApiHandler(QObject):
     albumsUpdated = Signal("QVariant")
     coverReady = Signal(str, str)
-    albumDetailsReceived = Signal(str, str, str, str, int, str, "QVariant")
+    albumDetailsReceived = Signal(str, str, str, str, int, str, bool, "QVariant")
     playlistListChanged = Signal("QVariant")
     playlistDetailsReceived = Signal(str, str, str, str, int, str, bool, "QVariant")
 
@@ -137,6 +137,7 @@ class ApiHandler(QObject):
                 cover_art_path,
                 album_details.get("songCount", 0),
                 time.strftime("%H:%M:%S", time.gmtime(album_details.get("duration", 0))),
+                True if album_details.get("starred", False) else False,
                 song_list
             )
             return album_details
