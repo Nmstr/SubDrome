@@ -9,6 +9,8 @@ Rectangle {
     function loadAlbums(type, page) {
         contentStack.currentIndex = 0;
         currentAlbumType = type;
+        topper.currentSearch = "";
+        topper.currentPage = page;
         apiHandler.get_albums(type, page);
     }
 

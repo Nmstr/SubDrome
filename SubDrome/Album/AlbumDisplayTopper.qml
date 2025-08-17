@@ -2,7 +2,9 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 Rectangle {
-    id: header
+    id: topper
+    property alias currentSearch: searchField.text
+    property alias currentPage: pageSpinBox.value
     color: "transparent"
 
     TextField {
