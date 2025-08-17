@@ -4,11 +4,13 @@ Rectangle {
     id: artistDisplay
     color: "transparent"
 
-    function loadArtists(type, page) {
+    function loadArtists(artists) {
         artistListModel.clear();
         contentStack.currentIndex = 3;
 
-        let artists = apiHandler.get_artists();
+        if (!artists) {
+            artists = apiHandler.get_artists();
+        }
         for (let i = 0; i < artists.length; i++) {
             let artist = artists[i];
             artistListModel.append({

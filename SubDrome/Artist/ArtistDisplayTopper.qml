@@ -23,6 +23,8 @@ Rectangle {
             radius: 5
             border.color: "#888"
         }
-        onTextChanged: {}
+        onTextChanged: {
+            artistDisplay.loadArtists(apiHandler.search_artists(text, 1));
+        }
     }
 }
