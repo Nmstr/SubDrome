@@ -61,6 +61,10 @@ Rectangle {
             ArtistDisplay {
                 id: artistDisplay
             }
+
+            ArtistPage {
+                id: artistPage
+            }
         }
     }
 

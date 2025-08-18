@@ -359,3 +359,28 @@ class ApiHandler(QObject):
                     ])
             return artists
         return [[]]
+
+    @Slot(str, result="QVariant")
+    def get_artist(self, artist_id: str) -> list:
+        """
+        Fetch details of a specific artist from the server.
+        :param artist_id: The ID of the artist to fetch details for.
+        :return: A list containing artist details: ID, name, cover art path, album count, favourite status, and user rating.
+        """
+        art_path = self.get_cover_art(artist_id)
+        extra_params = {
+            "id": artist_id
+        }
+        response = self._send_request("getArtist", extra_params)
+        if response.get("status") == "ok":
+            artist = response.get("artist", {})
+            artist_details = [
+                artist.get("id", ""),
+                artist.get("name", ""),
+                art_path,
+                artist.get("albumCount", 0),
+                True if artist.get("starred", False) else False,
+                artist.get("userRating", 0)
+            ]
+            return artist_details
+        return []

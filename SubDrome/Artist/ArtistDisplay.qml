@@ -75,6 +75,12 @@ Rectangle {
                         color: "white"
                         font.pixelSize: 18
                         verticalAlignment: Text.AlignVCenter
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                artistPage.loadArtistDetails(model.id);
+                            }
+                        }
                     }
 
                     Text {
