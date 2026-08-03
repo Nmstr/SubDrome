@@ -35,7 +35,10 @@ impl Config {
     }
 }
 
-pub fn save_credentials(username: &str, token: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub fn save_credentials(
+    username: &str,
+    token: &str,
+) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let entry = keyring::Entry::new(&KEYRING_SERVICE, username);
     entry?.set_password(token)?;
     Ok(())

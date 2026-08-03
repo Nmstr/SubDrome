@@ -1,0 +1,20 @@
+import { Session } from "../globals/session.slint";
+import { Button, LineEdit } from "std-widgets.slint";
+
+export component LoginPage inherits Rectangle {
+    VerticalLayout {
+        input-username := LineEdit {
+            placeholder-text: "username";
+        }
+        input-password := LineEdit {
+            placeholder-text: "password";
+        }
+        Button {
+            text: "Login";
+            clicked => { Session.login(input-username.text, input-password.text); }
+        }
+        Text {
+            text: Session.status;
+        }
+    }
+}

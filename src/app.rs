@@ -2,35 +2,84 @@ use crate::config;
 use crate::config::Config;
 use slint::ComponentHandle;
 use std::error::Error;
+use std::sync::{Arc, Mutex};
 
 slint::include_modules!();
 
 pub struct App {
     window: MainWindow,
-    config: Config,
+    config: Arc<Mutex<Config>>,
 }
 
 impl App {
     pub fn new() -> Result<Self, Box<dyn Error>> {
         let window = MainWindow::new()?;
-        let config = Config::load()?;
+        let config = Arc::new(Mutex::new(Config::load()?));
         slint::set_xdg_app_id("SubDrome")?;
 
         let app = Self { window, config };
+        app.wire_session();
         Ok(app)
     }
 
-    pub fn run(&mut self) -> Result<(), slint::PlatformError> {
-        self.config.active_username = Some(String::from("test"));
-        self.config.active_salt = Some(String::from("test-salt"));
-        self.config.save().expect("Failed to save config");
+    fn wire_session(&self) {
+        let session = self.window.global::<Session>();
+        let weak = self.window.as_weak();
+        let config = self.config.clone();
 
-        let digest = md5::compute(
-            self.config.active_username.clone().unwrap_or_default()
-                + &self.config.active_salt.clone().unwrap_or_default(),
-        );
-        config::save_credentials("test", &format!("{:x}", digest))
-            .expect("Failed to save credentials");
+        session.on_login(move |username, password| {
+            let weak = weak.clone();
+            let config = config.clone();
+            let username = username.to_string();
+            let password = password.to_string();
+
+            tokio::spawn(async move {
+                {
+                    let mut cfg = match config.lock() {
+                        Ok(cfg) => cfg,
+                        Err(e) => {
+                            eprintln!("Error locking config: {}", e);
+                            return;
+                        }
+                    };
+
+                    cfg.active_username = Some(username.clone());
+
+                    let digest = md5::compute(
+                        password.clone() + cfg.active_salt.as_deref().unwrap_or_default(),
+                    );
+
+                    if let Err(err) = config::save_credentials(&username, &format!("{:x}", digest))
+                    {
+                        let _ = weak.upgrade_in_event_loop(move |window| {
+                            let session = window.global::<Session>();
+                            session.set_status("Failed to save credentials.".into());
+                        });
+
+                        return;
+                    }
+
+                    if let Err(err) = cfg.save() {
+                        let _ = weak.upgrade_in_event_loop(move |window| {
+                            let session = window.global::<Session>();
+                            session.set_status("Failed to save configuration.".into());
+                        });
+
+                        return;
+                    }
+                }
+
+                weak.upgrade_in_event_loop(move |window| {
+                    let session = window.global::<Session>();
+                    session.set_logged_in(true);
+                    session.set_status("".into());
+                })
+                .ok();
+            });
+        });
+    }
+
+    pub fn run(&mut self) -> Result<(), slint::PlatformError> {
         println!("{:?}", config::load_credentials("test"));
 
         self.window.run().map_err(Into::into)

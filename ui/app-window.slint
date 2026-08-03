@@ -1,3 +1,9 @@
+import { Session } from "globals/session.slint";
+import { LoginPage } from "pages/login-page.slint";
+import { MainPage } from "pages/main-page.slint";
+
 export component MainWindow inherits Window {
     title: "SubDrome";
+    if !Session.logged-in : LoginPage {}
+    if Session.logged-in : MainPage {}
 }
