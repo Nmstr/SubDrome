@@ -13,19 +13,23 @@ export component LoginPage inherits Rectangle {
             font-size: 30pt;
             font-weight: FontWeight.bold;
         }
+        input-url := LineEdit {
+            placeholder-text: "Server Url";
+            max-height: 50pt;
+        }
         input-username := LineEdit {
-            placeholder-text: "username";
+            placeholder-text: "Username";
             max-height: 50pt;
         }
         input-password := LineEdit {
-            placeholder-text: "password";
+            placeholder-text: "Password";
             input-type: password;
             max-height: 50pt;
         }
         Button {
             text: "Login";
             max-height: 50pt;
-            clicked => { Session.login(input-username.text, input-password.text); }
+            clicked => { Session.login(input-url.text, input-username.text, input-password.text); }
         }
         Text {
             text: Session.status;

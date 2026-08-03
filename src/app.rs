@@ -27,9 +27,10 @@ impl App {
         let weak = self.window.as_weak();
         let config = self.config.clone();
 
-        session.on_login(move |username, password| {
+        session.on_login(move |url, username, password| {
             let weak = weak.clone();
             let config = config.clone();
+            let url = url.to_string();
             let username = username.to_string();
             let password = password.to_string();
 
@@ -44,6 +45,7 @@ impl App {
                     };
 
                     cfg.active_username = Some(username.clone());
+                    cfg.server_url = Some(url.clone());
 
                     let digest = md5::compute(
                         password.clone() + cfg.active_salt.as_deref().unwrap_or_default(),
