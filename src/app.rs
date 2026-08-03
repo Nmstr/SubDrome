@@ -1,9 +1,9 @@
 use crate::config;
 use crate::config::Config;
+use rand::distr::{Alphanumeric, SampleString};
 use slint::ComponentHandle;
 use std::error::Error;
 use std::sync::{Arc, Mutex};
-use rand::distr::{Alphanumeric, SampleString};
 
 slint::include_modules!();
 
@@ -53,7 +53,7 @@ impl App {
                         password.clone() + cfg.active_salt.as_deref().unwrap_or_default(),
                     );
 
-                    if let Err(err) = config::save_credentials(&username, &format!("{:x}", digest))
+                    if let Err(_err) = config::save_credentials(&username, &format!("{:x}", digest))
                     {
                         let _ = weak.upgrade_in_event_loop(move |window| {
                             let session = window.global::<Session>();
@@ -63,7 +63,7 @@ impl App {
                         return;
                     }
 
-                    if let Err(err) = cfg.save() {
+                    if let Err(_err) = cfg.save() {
                         let _ = weak.upgrade_in_event_loop(move |window| {
                             let session = window.global::<Session>();
                             session.set_status("Failed to save configuration.".into());
@@ -86,6 +86,6 @@ impl App {
     pub fn run(&mut self) -> Result<(), slint::PlatformError> {
         println!("{:?}", config::load_credentials("test"));
 
-        self.window.run().map_err(Into::into)
+        self.window.run()
     }
 }

@@ -30,7 +30,7 @@ impl Config {
 
     pub fn path() -> Result<PathBuf, std::io::Error> {
         let dirs = directories::ProjectDirs::from("org", "LightDrive", "SubDrome")
-            .ok_or_else(|| std::io::ErrorKind::NotFound)?;
+            .ok_or(std::io::ErrorKind::NotFound)?;
         Ok(dirs.config_dir().join("config.json"))
     }
 }
@@ -39,12 +39,12 @@ pub fn save_credentials(
     username: &str,
     token: &str,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let entry = keyring::Entry::new(&KEYRING_SERVICE, username);
+    let entry = keyring::Entry::new(KEYRING_SERVICE, username);
     entry?.set_password(token)?;
     Ok(())
 }
 
 pub fn load_credentials(username: &str) -> Result<String, keyring::Error> {
-    let entry = keyring::Entry::new(&KEYRING_SERVICE, username);
+    let entry = keyring::Entry::new(KEYRING_SERVICE, username);
     entry?.get_password()
 }
