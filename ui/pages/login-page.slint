@@ -3,14 +3,28 @@ import { Button, LineEdit } from "std-widgets.slint";
 
 export component LoginPage inherits Rectangle {
     VerticalLayout {
+        padding: 10pt;
+        spacing: 10pt;
+
+        Text {
+            text: "SubDrome";
+            horizontal-alignment: center;
+            vertical-alignment: center;
+            font-size: 30pt;
+            font-weight: FontWeight.bold;
+        }
         input-username := LineEdit {
             placeholder-text: "username";
+            max-height: 50pt;
         }
         input-password := LineEdit {
             placeholder-text: "password";
+            input-type: password;
+            max-height: 50pt;
         }
         Button {
             text: "Login";
+            max-height: 50pt;
             clicked => { Session.login(input-username.text, input-password.text); }
         }
         Text {
