@@ -3,6 +3,7 @@ use crate::config::Config;
 use slint::ComponentHandle;
 use std::error::Error;
 use std::sync::{Arc, Mutex};
+use rand::distr::{Alphanumeric, SampleString};
 
 slint::include_modules!();
 
@@ -44,8 +45,9 @@ impl App {
                         }
                     };
 
-                    cfg.active_username = Some(username.clone());
                     cfg.server_url = Some(url.clone());
+                    cfg.active_username = Some(username.clone());
+                    cfg.active_salt = Some(Alphanumeric.sample_string(&mut rand::rng(), 16));
 
                     let digest = md5::compute(
                         password.clone() + cfg.active_salt.as_deref().unwrap_or_default(),
