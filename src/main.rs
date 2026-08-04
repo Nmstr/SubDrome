@@ -1,5 +1,6 @@
 mod app;
 mod config;
+mod subsonic;
 
 use app::App;
 
